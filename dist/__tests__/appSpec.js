@@ -18,11 +18,6 @@ describe('Test server connection', () => {
     const request = (0, supertest_1.default)(app_1.default);
     it('it expects server to be running', () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield request.get('/');
-        console.log(response);
         expect(response.status).toEqual(200);
-    }));
-    it('it expects server to return status 404', () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield request.get('http://127.0.0.1:4000/');
-        expect(response.status).toEqual(404);
     }));
 });
