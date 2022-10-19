@@ -1,8 +1,9 @@
 // import dotenv
 import 'dotenv/config';
-
 // import express
 import express, { Request, Response, NextFunction } from 'express';
+
+import authRoutes from './APIs/routes/AUTH/authentication';
 
 // Initialize express
 const app: express.Application = express();
@@ -20,6 +21,8 @@ app.get('/', async (req: Request, res: Response, next: NextFunction) => {
     res.send('Welcome to DeliveryCog');
 });
 
+// Routes
+authRoutes(app);
 // Listen for server connections
 const server = app.listen(PORT, () =>
     console.log(`server running on ${address}`)

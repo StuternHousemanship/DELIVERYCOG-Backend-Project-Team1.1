@@ -1,0 +1,21 @@
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "deliverycog",
+    "user": "admin",
+    "password": "adminpassword"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "deliverycog_test",
+    "user": "admin",
+    "password": "adminpassword"
+  },
+  "production":{
+    "driver": "pg",
+    "native":"true"
+  }
+ 
+}

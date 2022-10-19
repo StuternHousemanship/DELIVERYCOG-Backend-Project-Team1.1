@@ -12,25 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import dotenv
-require("dotenv/config");
-// import express
-const express_1 = __importDefault(require("express"));
-const authentication_1 = __importDefault(require("./APIs/routes/AUTH/authentication"));
-// Initialize express
-const app = (0, express_1.default)();
-// Port
-const address = '0.0.0.0:8000';
-const PORT = process.env.PORT || 3000;
-// Body parser middleware
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: false }));
-// Define index route
-app.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('Welcome to DeliveryCog');
-}));
-// Routes
-(0, authentication_1.default)(app);
-// Listen for server connections
-const server = app.listen(PORT, () => console.log(`server running on ${address}`));
-exports.default = server;
+exports.validatePhoneNumber = exports.validateEmail = void 0;
+const globalQueries_1 = __importDefault(require("../../models/globalQueries"));
+const globalQuery = new globalQueries_1.default();
+const validateEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield globalQuery.findOne('users', 'email', email);
+    if (user.length > 0) {
+        return user[0].email;
+    }
+    return undefined;
+});
+exports.validateEmail = validateEmail;
+const validatePhoneNumber = (phoneNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    const userphoneNumber = yield globalQuery.findOne('users', 'phone_number', phoneNumber);
+    if (userphoneNumber.length > 0) {
+        return userphoneNumber[0].phone_number;
+    }
+    return undefined;
+});
+exports.validatePhoneNumber = validatePhoneNumber;
