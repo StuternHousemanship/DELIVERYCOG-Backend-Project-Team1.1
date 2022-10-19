@@ -12,13 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.create = void 0;
+exports.activateAccount = exports.create = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const mailer_1 = require("../../../services/EMAIL/mailer");
 const authentication_1 = require("../../../services/AUTH/authentication");
 const validation_1 = require("../validation");
 const appError_1 = __importDefault(require("../../../services/ERRORS/appError"));
+const globalQueries_1 = __importDefault(require("../../../models/globalQueries"));
 const authStore = new authentication_1.AuthService();
+const globalQuery = new globalQueries_1.default();
 const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const code = crypto_1.default.randomInt(100000, 1000000);
     try {
@@ -79,4 +81,47 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.create = create;
-exports.default = exports.create;
+const activateAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { code } = req.body;
+    try {
+        const user = yield globalQuery.findOne('users', 'verification_code', code);
+        if (user.length === 0) {
+            return res.status(401).json({
+                message: 'Invalid code',
+                success: false,
+            });
+        }
+        if (user[0].is_verified) {
+            return res.status(409).json({
+                message: 'Email already verified',
+                success: false,
+            });
+        }
+        const updateUser = {
+            table: 'users',
+            setColumn: 'is_verified',
+            setValue: 'true',
+            uniqueColumn: 'verification_code',
+            uniqueValue: user[0].verification_code,
+        };
+        const modifyUser = yield globalQuery.updateOne(updateUser);
+        const message = `<p>Welcome to DeliveryCog ${modifyUser[0].first_name}
+         your account have been activated.<p>`;
+        const userInfo = {
+            first_name: modifyUser[0].first_name,
+            email: modifyUser[0].email,
+            subject: 'Welcome to DeliveryCog',
+            message,
+        };
+        (0, mailer_1.welcome)(userInfo);
+        return res.status(201).json({
+            success: true,
+            message: 'Email verification successful',
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return next(new appError_1.default(`something went wrong here is the error ${error}`, 500));
+    }
+});
+exports.activateAccount = activateAccount;

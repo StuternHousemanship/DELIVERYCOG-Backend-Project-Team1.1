@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import { sendOTP } from '../../../services/EMAIL/mailer';
+import { sendOTP, welcome } from '../../../services/EMAIL/mailer';
 import { AuthService, User } from '../../../services/AUTH/authentication';
 import { validateEmail, validatePhoneNumber } from '../validation';
 import AppError from '../../../services/ERRORS/appError';
+import GlobalQueries from '../../../models/globalQueries';
 
 const authStore = new AuthService();
+const globalQuery = new GlobalQueries();
 
 export const create = async (
     req: Request,
@@ -71,4 +73,58 @@ export const create = async (
     }
 };
 
-export default create;
+export const activateAccount = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const { code } = req.body;
+    try {
+        const user = await globalQuery.findOne(
+            'users',
+            'verification_code',
+            code as number
+        );
+        if (user.length === 0) {
+            return res.status(401).json({
+                message: 'Invalid code',
+                success: false,
+            });
+        }
+        if (user[0].is_verified) {
+            return res.status(409).json({
+                message: 'Email already verified',
+                success: false,
+            });
+        }
+        const updateUser = {
+            table: 'users',
+            setColumn: 'is_verified',
+            setValue: 'true',
+            uniqueColumn: 'verification_code',
+            uniqueValue: user[0].verification_code as number,
+        };
+        const modifyUser = await globalQuery.updateOne(updateUser);
+
+        const message = `<p>Welcome to DeliveryCog ${modifyUser[0].first_name}
+         your account have been activated.<p>`;
+
+        const userInfo = {
+            first_name: modifyUser[0].first_name,
+            email: modifyUser[0].email,
+            subject: 'Welcome to DeliveryCog',
+            message,
+        };
+
+        welcome(userInfo);
+        return res.status(201).json({
+            success: true,
+            message: 'Email verification successful',
+        });
+    } catch (error) {
+        console.log(error);
+        return next(
+            new AppError(`something went wrong here is the error ${error}`, 500)
+        );
+    }
+};

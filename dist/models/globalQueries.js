@@ -23,5 +23,14 @@ class GlobalQueries {
             return res.rows;
         });
     }
+    updateOne(obj) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const conn = yield Connection_1.default.client.connect();
+            const sql = `UPDATE ${obj.table} SET ${obj.setColumn}='${obj.setValue}' WHERE ${obj.uniqueColumn}='${obj.uniqueValue}' RETURNING *`;
+            const res = yield conn.query(sql);
+            conn.release();
+            return res.rows;
+        });
+    }
 }
 exports.default = GlobalQueries;

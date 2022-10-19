@@ -1,14 +1,19 @@
 import express from 'express';
-import { create } from '../../controllers/AUTH/authentication';
+import { create, activateAccount } from '../../controllers/AUTH/authentication';
 import validate from '../../middlewares/validateRequest';
-import { registerValidationRules } from '../validation';
+import { otpValidationRules, registerValidationRules } from '../validation';
 
 const authRoutes = (app: express.Application) => {
     app.post(
-        '/api/v1/users/auth/register',
+        '/api/v1/auth/register',
         registerValidationRules(),
         validate,
         create
+    );
+    app.post(
+        '/api/v1/auth/account-activation',
+        otpValidationRules(),
+        activateAccount
     );
 };
 

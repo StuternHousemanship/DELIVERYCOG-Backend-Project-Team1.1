@@ -31,3 +31,10 @@ const validatePhoneNumber = (phoneNumber) => __awaiter(void 0, void 0, void 0, f
     return undefined;
 });
 exports.validatePhoneNumber = validatePhoneNumber;
+// export const isActive = async (email: string): Promise<boolean | undefined> => {
+//     const user = await globalQuery.findOne('users', 'email', email);
+//     if (user[0].is_verified.toString() === 'f') {
+//         return false;
+//     }
+//     return true;
+// };

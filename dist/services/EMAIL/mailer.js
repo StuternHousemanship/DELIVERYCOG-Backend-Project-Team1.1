@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendOTP = void 0;
+exports.welcome = exports.sendOTP = void 0;
 require("dotenv/config");
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const html_to_text_1 = require("html-to-text");
@@ -58,3 +58,7 @@ const sendOTP = (options) => __awaiter(void 0, void 0, void 0, function* () {
     sendEmail(options);
 });
 exports.sendOTP = sendOTP;
+const welcome = (options) => __awaiter(void 0, void 0, void 0, function* () {
+    sendEmail(options);
+});
+exports.welcome = welcome;

@@ -4,8 +4,8 @@ import { htmlToText } from 'html-to-text';
 
 export interface Mail {
     email: string;
-    first_name: string;
-    code: number;
+    first_name?: string;
+    code?: number;
     subject: string;
     message: string;
 }
@@ -61,5 +61,9 @@ const sendEmail = async (options: Mail) => {
 };
 
 export const sendOTP = async (options: Mail) => {
+    sendEmail(options);
+};
+
+export const welcome = async (options: Mail) => {
     sendEmail(options);
 };
