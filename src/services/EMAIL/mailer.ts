@@ -1,14 +1,7 @@
 import 'dotenv/config';
 import nodemailer from 'nodemailer';
 import { htmlToText } from 'html-to-text';
-
-export interface Mail {
-    email: string;
-    first_name?: string;
-    code?: number;
-    subject: string;
-    message: string;
-}
+import { Mail } from '../../models/Mail';
 
 const {
     SERVICE_NAME,

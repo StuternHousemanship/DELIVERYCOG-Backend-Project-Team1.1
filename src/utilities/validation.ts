@@ -1,11 +1,12 @@
-import GlobalQueries from '../../models/globalQueries';
+import { User } from '../models/User';
+import GlobalQueries from '../Repository/globalQueries';
 
 const globalQuery = new GlobalQueries();
 
 export const validateEmail = async (
     email: string
 ): Promise<string | undefined> => {
-    const user = await globalQuery.findOne('users', 'email', email);
+    const user: User[] = await globalQuery.findOne('users', 'email', email);
     if (user.length > 0) {
         return user[0].email;
     }
