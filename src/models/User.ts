@@ -9,7 +9,11 @@ export interface User {
     is_verified?: boolean;
     created_at?: string;
 }
-export interface UpdateOne {
+export interface LoginUser {
+    password: string;
+    email: string;
+}
+export interface UpdateOneQuery {
     table: string;
     setColumn: string;
     setValue: string | number | null;

@@ -62,6 +62,13 @@ const errorHandler = (
                 error: error.message,
             });
         }
+        if (error.name === 'TokenExpiredError') {
+            const status = error.statusCode || 401;
+            return res.status(status).json({
+                success: false,
+                error: error.message,
+            });
+        }
     } else {
         return res.status(err.statusCode || 400).json({
             success: false,

@@ -53,10 +53,14 @@ const sendEmail = async (options: Mail) => {
     }
 };
 
-export const sendOTP = async (options: Mail) => {
+export const sendOTPMail = async (options: Mail) => {
     sendEmail(options);
 };
 
-export const welcome = async (options: Mail) => {
+export const welcomeMail = async (options: Mail) => {
+    sendEmail(options);
+};
+
+export const loginConfirmationMail = async (options: Mail) => {
     sendEmail(options);
 };

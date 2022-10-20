@@ -27,7 +27,8 @@
               "js": "never",
               "ts": "never"
             }
-          ]
+          ],
+          "prefer-destructuring": ["error", { "object": true, "array": false }]
     },
     "settings": {
         "import/resolver": {

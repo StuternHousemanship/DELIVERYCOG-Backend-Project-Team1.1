@@ -7,7 +7,7 @@
         "lint": "eslint . --ext .ts --fix",
         "prettier": "prettier --config .prettierrc --ignore-path .gitignore  --write './src/**/*.+(js|ts)'",
         "format": "npm run lint && npm run prettier ",
-        "dev": "npm run tsc && nodemon ./src/app.ts",
+        "dev": "npm run tsc && nodemon --files ./src/app.ts",
         "jasmine": "jasmine",
         "test": "NODE_ENV=test db-migrate -e test up && NODE_ENV=test npm run jasmine",
         "test-mgt": "NODE_ENV=test db-migrate --env test up",

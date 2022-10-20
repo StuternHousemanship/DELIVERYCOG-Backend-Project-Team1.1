@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import GlobalQueries from '../Repository/globalQueries';
 
@@ -27,10 +28,19 @@ export const validatePhoneNumber = async (
     return undefined;
 };
 
-// export const isActive = async (email: string): Promise<boolean | undefined> => {
-//     const user = await globalQuery.findOne('users', 'email', email);
-//     if (user[0].is_verified.toString() === 'f') {
-//         return false;
-//     }
-//     return true;
-// };
+export const isActive = async (email: string): Promise<boolean | undefined> => {
+    const user = await globalQuery.findOne('users', 'email', email);
+    if (user[0].is_verified) {
+        return true;
+    }
+    return false;
+};
+
+export const generateAccessToken = (user: User[]): string => {
+    const secret = String(process.env.AccessToken);
+    const data = {
+        user_id: user[0].id,
+        email: user[0].email,
+    };
+    return jwt.sign(data, secret, { expiresIn: '1800s' });
+};

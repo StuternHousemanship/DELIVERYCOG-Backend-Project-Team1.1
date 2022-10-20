@@ -1,5 +1,5 @@
 import DB from '../config/db/Connection';
-import { User, UpdateOne } from '../models/User';
+import { UpdateOneQuery } from '../models/User';
 
 class GlobalQueries {
     async findOne(
@@ -14,7 +14,7 @@ class GlobalQueries {
         return res.rows;
     }
 
-    async updateOne(obj: UpdateOne) {
+    async updateOne(obj: UpdateOneQuery) {
         const conn = await DB.client.connect();
         const sql = `UPDATE ${obj.table} SET ${obj.setColumn}='${obj.setValue}' WHERE ${obj.uniqueColumn}='${obj.uniqueValue}' RETURNING *`;
         const res = await conn.query(sql);
@@ -22,4 +22,5 @@ class GlobalQueries {
         return res.rows;
     }
 }
+
 export default GlobalQueries;
