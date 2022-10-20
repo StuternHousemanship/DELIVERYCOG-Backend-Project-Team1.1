@@ -1,20 +1,9 @@
 import bcrypt from 'bcrypt';
 import DB from '../../config/db/Connection';
 import { pepper, saltRound } from '../bcrypt';
+import { User } from '../../models/User';
 
-export interface User {
-    id?: number;
-    first_name: string;
-    last_name: string;
-    password_digest: string;
-    phone_number: number;
-    email: string;
-    verification_code?: number;
-    is_verified?: boolean;
-    created_at?: string;
-}
-
-export class AuthService {
+export default class AuthService {
     async createUser(user: User): Promise<User[]> {
         const conn = await DB.client.connect();
         const sql =

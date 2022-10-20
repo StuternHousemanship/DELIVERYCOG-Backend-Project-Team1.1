@@ -1,4 +1,4 @@
-import GlobalQueries from '../../models/globalQueries';
+import GlobalQueries from '../../Repository/globalQueries';
 
 const globalQuery = new GlobalQueries();
 

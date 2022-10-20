@@ -1,13 +1,5 @@
 import DB from '../config/db/Connection';
-import { User } from '../services/AUTH/authentication';
-
-export interface UpdateOne {
-    table: string;
-    setColumn: string;
-    setValue: string | number | null;
-    uniqueColumn: string;
-    uniqueValue: string | number | null;
-}
+import { User, UpdateOne } from '../models/User';
 
 class GlobalQueries {
     async findOne(

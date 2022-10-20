@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import { sendOTP, welcome } from '../../../services/EMAIL/mailer';
-import { AuthService, User } from '../../../services/AUTH/authentication';
+import AuthService from '../../../services/AUTH/authentication';
+import { User } from '../../../models/User';
 import { validateEmail, validatePhoneNumber } from '../validation';
 import AppError from '../../../services/ERRORS/appError';
-import GlobalQueries from '../../../models/globalQueries';
+import GlobalQueries from '../../../Repository/globalQueries';
 
 const authStore = new AuthService();
 const globalQuery = new GlobalQueries();
