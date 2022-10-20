@@ -3,9 +3,9 @@ import crypto from 'crypto';
 import { sendOTP, welcome } from '../../../services/EMAIL/mailer';
 import AuthService from '../../../services/AUTH/authentication';
 import { User } from '../../../models/User';
-import { validateEmail, validatePhoneNumber } from '../validation';
 import AppError from '../../../services/ERRORS/appError';
 import GlobalQueries from '../../../Repository/globalQueries';
+import { validateEmail, validatePhoneNumber } from '../validation';
 
 const authStore = new AuthService();
 const globalQuery = new GlobalQueries();
