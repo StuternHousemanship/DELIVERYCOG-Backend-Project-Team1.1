@@ -1,5 +1,5 @@
-import { User } from '../../models/User';
-import GlobalQueries from '../../Repository/globalQueries';
+import { User } from '../models/User';
+import GlobalQueries from '../Repository/globalQueries';
 
 const globalQuery = new GlobalQueries();
 
