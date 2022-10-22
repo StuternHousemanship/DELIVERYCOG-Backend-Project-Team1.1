@@ -1,8 +1,11 @@
 import bcrypt from 'bcrypt';
+import crypto, { createHmac } from 'crypto';
 import DB from '../../config/db/Connection';
-import { pepper, saltRound } from '../bcrypt';
-import { User } from '../../models/User';
+import { pepper, saltRound, secret } from '../bcrypt';
+import { User } from '../../Models/User';
+import GlobalQueries from '../../Repository/globalQueries';
 
+const globalQuery = new GlobalQueries();
 export default class AuthService {
     async createUser(user: User): Promise<User[]> {
         const conn = await DB.client.connect();
@@ -22,5 +25,20 @@ export default class AuthService {
         ]);
         conn.release();
         return result.rows;
+    }
+
+    async forgotpassword(email: string) {
+        const code = crypto.randomInt(100000, 1000000);
+        const encryptedCode = await bcrypt.hash(code + pepper, saltRound);
+        
+        const forgot: User[] = await globalQuery.updateOne({
+            model: 'users',
+            table: 'verification_code',
+            value: code,
+            uniqueColumn: 'email',
+            uniqueValue: email,
+        });
+          
+        return forgot.length > 0 ? forgot : false;
     }
 }

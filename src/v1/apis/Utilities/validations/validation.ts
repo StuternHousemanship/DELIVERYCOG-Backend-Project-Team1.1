@@ -59,3 +59,12 @@ export const otpValidationRules = () => {
             .withMessage('code must be at least 6 character long'),
     ];
 };
+export const emailValidationRules = () => {
+    return [
+        check('email')
+            .trim()
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('please enter a valid email'),
+    ];
+};

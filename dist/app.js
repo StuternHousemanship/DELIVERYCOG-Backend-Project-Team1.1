@@ -16,21 +16,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 // import express
 const express_1 = __importDefault(require("express"));
-const authentication_1 = __importDefault(require("./APIs/routes/AUTH/authentication"));
+// import authRoutes from './v1/apis/Routes/auth/authentication.router';
+const Routes_1 = __importDefault(require("./v1/apis/Routes"));
 // Initialize express
 const app = (0, express_1.default)();
 // Port
-const address = '0.0.0.0:8000';
 const PORT = process.env.PORT || 3000;
+const address = `0.0.0.0:${PORT}`;
 // Body parser middleware
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 // Define index route
-app.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('Welcome to DeliveryCog');
+app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.contentType('json');
+    res.json({ status: 'ok', message: 'Welcome to DeliveryCog' });
 }));
 // Routes
-(0, authentication_1.default)(app);
+app.use('/api/v1', Routes_1.default);
+// authRoutes(app);
 // Listen for server connections
 const server = app.listen(PORT, () => console.log(`server running on ${address}`));
 exports.default = server;

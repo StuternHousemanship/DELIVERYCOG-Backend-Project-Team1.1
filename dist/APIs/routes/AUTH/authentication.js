@@ -9,5 +9,6 @@ const validation_1 = require("../validation");
 const authRoutes = (app) => {
     app.post('/api/v1/auth/register', (0, validation_1.registerValidationRules)(), validateRequest_1.default, authentication_1.create);
     app.post('/api/v1/auth/account-activation', (0, validation_1.otpValidationRules)(), authentication_1.activateAccount);
+    app.post('/api/v1/auth/forgot-password', (0, validation_1.emailValidationRules)(), validateRequest_1.default, authentication_1.forgotPassword);
 };
 exports.default = authRoutes;

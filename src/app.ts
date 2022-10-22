@@ -3,7 +3,8 @@ import 'dotenv/config';
 // import express
 import express, { Request, Response } from 'express';
 
-import authRoutes from './APIs/routes/AUTH/authentication';
+// import authRoutes from './v1/apis/Routes/auth/authentication.router';
+import routerV1 from './v1/apis/Routes';
 
 // Initialize express
 const app: express.Application = express();
@@ -23,7 +24,7 @@ app.get('/', async (req: Request, res: Response) => {
 });
 
 // Routes
-authRoutes(app);
+app.use('/api/v1', routerV1); 
 
 // Listen for server connections
 const server = app.listen(PORT, () =>

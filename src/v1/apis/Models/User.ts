@@ -11,8 +11,8 @@ export interface User {
 }
 export interface UpdateOne {
     table: string;
-    setColumn: string;
-    setValue: string | number | null;
-    uniqueColumn: string;
-    uniqueValue: string | number | null;
+    column: string;
+    value: string | number | null;
+    uniqueColumn?: string;
+    uniqueValue?: string | number | null;
 }

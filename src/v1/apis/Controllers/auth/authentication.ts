@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import { sendOTP, welcome } from '../../../services/EMAIL/mailer';
-import AuthService from '../../../services/AUTH/authentication';
-import { User } from '../../../models/User';
-import AppError from '../../../services/ERRORS/appError';
-import GlobalQueries from '../../../Repository/globalQueries';
 import {
-    validateEmail,
-    validatePhoneNumber,
-} from '../../../utilities/validation';
+    sendForgotPassword,
+    sendOTP,
+    welcome,
+} from '../../Services/email/mailer';
+import AuthService from '../../Services/auth/authentication';
+import { User } from '../../Models/User';
+import { AppError } from '../../Utilities/errors/appError';
+import GlobalQueries from '../../Repository/globalQueries';
+
 
 const authStore = new AuthService();
 const globalQuery = new GlobalQueries();
@@ -28,7 +29,11 @@ export const create = async (
             email: req.body.email,
             verification_code: code,
         };
-        const userEmail = await validateEmail(user.email);
+        const userEmail = await globalQuery.exist({
+            model: 'users',
+            table: 'email',
+            value: user.email,
+        });
         if (userEmail) {
             return res.status(400).json({
                 success: false,
@@ -36,7 +41,11 @@ export const create = async (
                 message: 'Registration failure',
             });
         }
-        const userPhone = await validatePhoneNumber(user.phone_number);
+        const userPhone = await globalQuery.exist({
+            model: 'users',
+            table: 'phone_number',
+            value: user.phone_number,
+        });
         if (userPhone) {
             return res.status(400).json({
                 success: false,
@@ -84,11 +93,11 @@ export const activateAccount = async (
 ) => {
     const { code } = req.body;
     try {
-        const user = await globalQuery.findOne(
-            'users',
-            'verification_code',
-            code as number
-        );
+        const user = await globalQuery.findOne({
+            model: 'users',
+            table: 'verification_code',
+            value: code as number,
+        });
         if (user.length === 0) {
             return res.status(401).json({
                 message: 'Invalid code',
@@ -102,9 +111,9 @@ export const activateAccount = async (
             });
         }
         const updateUser = {
-            table: 'users',
-            setColumn: 'is_verified',
-            setValue: 'true',
+            model: 'users',
+            table: 'is_verified',
+            value: 'true',
             uniqueColumn: 'verification_code',
             uniqueValue: user[0].verification_code as number,
         };
@@ -131,4 +140,54 @@ export const activateAccount = async (
             new AppError(`something went wrong here is the error ${error}`, 500)
         );
     }
+};
+export const forgotPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const { email } = req.body;
+    const userEmail = await globalQuery.exist({
+        model: 'users',
+        table: 'email',
+        value: email,
+    });
+    if (!userEmail) {
+        return res.status(404).json({
+            success: false,
+            error: `Forgot Password Failed`,
+            message: `User with ${email} not found`,
+            data: [req.body],
+        });
+    }
+    const forgot = await authStore.forgotpassword(email);
+    if (!forgot) {
+        return res.status(500).json({
+            success: false,
+            error: `Forgot Password Failed`,
+            message: `User with ${email}`,
+            data: [req.body],
+        });
+    }
+    const message = `<p>
+                        ${forgot[0].first_name}, <br> 
+
+                        Someone has requested a code to change your password. You can do this through the link below.  <br> 
+
+                        Code: ${forgot[0].verification_code}
+                        <br> 
+                        If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one.
+                        <br> 
+                        Thanks,  <br> 
+                        Team DeliveryCog <p/>`;
+    const data = {
+        email: email,
+        first_name: forgot[0].first_name,
+        code: forgot[0].verification_code,
+        subject: 'Resetting your DeliveryCog password',
+        message,
+    };
+    sendForgotPassword(data);
+
+    return res.status(200).json(forgot);
 };

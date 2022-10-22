@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const crypto_1 = __importDefault(require("crypto"));
 const Connection_1 = __importDefault(require("../../config/db/Connection"));
 const bcrypt_2 = require("../bcrypt");
+const globalQueries_1 = __importDefault(require("../../Repository/globalQueries"));
+const globalQuery = new globalQueries_1.default();
 class AuthService {
     createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,5 +36,20 @@ class AuthService {
             return result.rows;
         });
     }
+    forgotpassword(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const code = crypto_1.default.randomInt(100000, 1000000);
+            const encryptedCode = yield bcrypt_1.default.hash(code + bcrypt_2.pepper, bcrypt_2.saltRound);
+            const forgot = yield globalQuery.updateOne({
+                model: 'users',
+                table: 'verification_code',
+                value: code,
+                uniqueColumn: 'email',
+                uniqueValue: email,
+            });
+            console.log(forgot[0].verification_code);
+            return forgot.length > 0 ? forgot : false;
+        });
+    }
 }
-exports.AuthService = AuthService;
+exports.default = AuthService;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.otpValidationRules = exports.loginValidationRules = exports.registerValidationRules = void 0;
+exports.emailValidationRules = exports.otpValidationRules = exports.loginValidationRules = exports.registerValidationRules = void 0;
 const express_validator_1 = require("express-validator");
 const registerValidationRules = () => {
     return [
@@ -61,3 +61,13 @@ const otpValidationRules = () => {
     ];
 };
 exports.otpValidationRules = otpValidationRules;
+const emailValidationRules = () => {
+    return [
+        (0, express_validator_1.check)('email')
+            .trim()
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('please enter a valid email'),
+    ];
+};
+exports.emailValidationRules = emailValidationRules;

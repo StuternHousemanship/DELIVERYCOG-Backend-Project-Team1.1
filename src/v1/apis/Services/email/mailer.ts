@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import nodemailer from 'nodemailer';
 import { htmlToText } from 'html-to-text';
-import { Mail } from '../../models/Mail';
+import { Mail } from '../../Models/Mail';
 
 const {
     SERVICE_NAME,
@@ -11,6 +11,7 @@ const {
     EMAIL_USERNAME,
     EMAIL_PASSWORD,
     EMAIL_HOST,
+    EMAIL_PORT,
     EMAIL_FROM,
 } = process.env;
 
@@ -40,8 +41,8 @@ const sendEmail = async (options: Mail) => {
         await transporter.sendMail(mailOptions);
     } else {
         const transporter = nodemailer.createTransport({
-            host: EMAIL_HOST,
-            port: 587,
+            host: EMAIL_HOST as string,
+            port: EMAIL_PORT as unknown as number,
             auth: {
                 user: EMAIL_USERNAME,
                 pass: EMAIL_PASSWORD,
@@ -58,5 +59,9 @@ export const sendOTP = async (options: Mail) => {
 };
 
 export const welcome = async (options: Mail) => {
+    sendEmail(options);
+};
+
+export const sendForgotPassword = async (options: Mail) => {
     sendEmail(options);
 };

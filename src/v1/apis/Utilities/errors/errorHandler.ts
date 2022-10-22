@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { NextFunction, Request, Response } from 'express';
-import AppError from '../../../services/ERRORS/appError';
+import {AppError} from './appError';
 
 const sendErrorDev = (err: AppError, res: Response) => {
     const statusCode = err.statusCode || 500;
