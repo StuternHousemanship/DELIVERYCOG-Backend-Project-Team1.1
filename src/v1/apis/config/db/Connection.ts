@@ -29,7 +29,7 @@ if (NODE_ENV === 'production') {
         user: POSTGRES_USER,
         database: POSTGRES_DB,
         password: POSTGRES_PASSWORD,
-        port: parseInt(DATABASE_PORT as string, 10),
+        port: Number(DATABASE_PORT),
     });
 } else {
     client = new Pool({
@@ -37,7 +37,7 @@ if (NODE_ENV === 'production') {
         user: POSTGRES_USER,
         database: POSTGRES_TEST_DB,
         password: POSTGRES_PASSWORD,
-        port: parseInt(DATABASE_PORT as string, 10),
+        port: Number(DATABASE_PORT),
     });
 }
 

@@ -42,7 +42,7 @@ const sendEmail = async (options: Mail) => {
     } else {
         const transporter = nodemailer.createTransport({
             host: EMAIL_HOST as string,
-            port: EMAIL_PORT as unknown as number,
+            port: Number(EMAIL_PORT),
             auth: {
                 user: EMAIL_USERNAME,
                 pass: EMAIL_PASSWORD,

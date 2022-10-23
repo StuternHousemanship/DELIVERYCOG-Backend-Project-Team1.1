@@ -68,3 +68,28 @@ export const emailValidationRules = () => {
             .withMessage('please enter a valid email'),
     ];
 };
+export const restPasswordValidationRules = () => {
+    return [
+        check('password')
+            .trim()
+            .notEmpty()
+            .withMessage('Password can not be empty')
+            .isLength({ min: 6, max: 16 })
+            .withMessage('Password must be between 6 and 16 characters'),
+        check('confirm_password')
+            .trim()
+            .notEmpty()
+            .withMessage('Password can not be empty')
+            .isLength({ min: 6, max: 16 })
+            .withMessage('Password must be between 6 and 16 characters'),
+        check('email')
+            .trim()
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('please enter a valid email'),
+        check('code')
+            .isLength({ min: 6 })
+            .isNumeric()
+            .withMessage('code must be at least 6 character long'),
+    ];
+};

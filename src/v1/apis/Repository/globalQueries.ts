@@ -15,7 +15,7 @@ class GlobalQueries {
             const res = await conn.query(sql);
 
             conn.release();
-            return res.rows[0] === undefined ? {} : res.rows[0];
+            return res.rows[0] === undefined ? [] : res.rows[0];
         } catch (error) {
             throw new AppError(`${error}`, 404);
         }
@@ -27,7 +27,7 @@ class GlobalQueries {
             const sql = `UPDATE ${query.model} SET ${query.table}='${query.value}' WHERE ${query.uniqueColumn}='${query.uniqueValue}' RETURNING *`;
             const res = await conn.query(sql);
             conn.release();
-            return res.rows;
+            return res.rows[0];
         } catch (error) {
             throw new AppError(`${error}`, 500);
         }
