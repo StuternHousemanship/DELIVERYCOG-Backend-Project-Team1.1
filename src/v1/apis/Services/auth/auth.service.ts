@@ -1,11 +1,15 @@
 import crypto, { createHmac } from 'crypto';
-import DB from '../../config/db/Connection';
 import { Encryption } from '../../Utilities/bcrypt';
 import { User } from '../../Models/User';
 import GlobalQueries from '../../Repository/globalQueries';
-import { NextFunction, Request, Response } from 'express';
+import { Response } from 'express';
 import { response } from '../../Utilities/response';
-import { sendOTP, welcome, sendForgotPassword } from '../email/mailer';
+import {
+    sendOTP,
+    welcome,
+    sendForgotPassword,
+    sendResetSuccess,
+} from '../email/mailer';
 import AuthRepository from '../../Repository/auth/auth.repository';
 
 const globalQuery = new GlobalQueries();
@@ -216,14 +220,21 @@ export default class AuthService {
                 })
             );
         }
-        const resetUserPassword = globalQuery.updateOne({
+        const user: User = await globalQuery.updateOne({
             model: 'users',
             table: 'password_digest',
             value: await new Encryption().bcrypt(String(password)),
             uniqueColumn: 'email',
             uniqueValue: email,
         });
-        if (!resetUserPassword) {
+        await globalQuery.updateOne({
+            model: 'users',
+            table: 'verification_code',
+            value: crypto.randomInt(100000, 1000000),
+            uniqueColumn: 'email',
+            uniqueValue: email,
+        });
+        if (!user) {
             return res.status(500).json(
                 response({
                     error: 'Error updating password',
@@ -232,6 +243,18 @@ export default class AuthService {
                 })
             );
         }
+        const message = `<p>
+                        Hi ${user.first_name}, <br> 
+                        You have successfully reset your password.
+                          <br> 
+                        Team DeliveryCog <p/>`;
+        const data = {
+            email: email,
+            first_name: user.first_name,
+            subject: 'Password Reset Successfully',
+            message,
+        };
+        sendResetSuccess(data);
         return res.status(200).json(
             response({
                 message: 'Password successfully reset',
