@@ -1,12 +1,6 @@
 import DB from '../config/db/Connection';
 import { AppError } from '../Utilities/errors/appError';
-interface Query {
-    model: string;
-    table: string;
-    value?: string | number;
-    uniqueColumn?: string;
-    uniqueValue?: string | number;
-}
+import { Query } from '../Models/globalQueries';
 class GlobalQueries {
     async findOne(query: Query) {
         try {
