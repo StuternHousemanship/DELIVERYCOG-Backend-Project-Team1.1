@@ -1,5 +1,5 @@
-import DB from '../config/db/Connection';
-import { UpdateOneQuery } from '../models/User';
+import DB from '../Config/db/Connection';
+import { UpdateOneQuery } from '../Models/User';
 
 class GlobalQueries {
     async findOne(

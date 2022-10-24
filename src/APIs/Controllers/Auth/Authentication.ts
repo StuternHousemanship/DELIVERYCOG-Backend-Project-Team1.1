@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AuthService from '../../../services/AUTH/authentication';
+import AuthService from '../../../Services/Auth/Authentication';
 
 const authStore = new AuthService();
 

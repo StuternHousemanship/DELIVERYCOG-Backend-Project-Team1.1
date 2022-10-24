@@ -3,14 +3,14 @@ import {
     create,
     activateAccount,
     signIn,
-} from '../../controllers/AUTH/authentication';
-import validate from '../../middlewares/validateRequest';
-import verifyToken from '../../middlewares/Authentication';
+} from '../../Controllers/Auth/Authentication';
+import validate from '../../Middlewares/validateRequest';
+import verifyToken from '../../Middlewares/Authentication';
 import {
     loginValidationRules,
     otpValidationRules,
     registerValidationRules,
-} from '../validation';
+} from '../Validation';
 
 const authRoutes = (app: Application) => {
     app.post(

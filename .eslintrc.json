@@ -28,7 +28,14 @@
               "ts": "never"
             }
           ],
-          "prefer-destructuring": ["error", { "object": true, "array": false }]
+          "prefer-destructuring": ["error", { "object": true, "array": false }],
+          "import/no-extraneous-dependencies": [
+            "error",
+            {
+              "devDependencies": true
+            }
+          ]
+        
     },
     "settings": {
         "import/resolver": {

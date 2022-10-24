@@ -1,24 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import {
-    sendOTPMail,
-    welcomeMail,
-    loginConfirmationMail,
-} from '../EMAIL/mailer';
-import AuthRepository from '../../Repository/AUTH/authentication';
-
+import AuthRepository from '../../Repository/Auth/Authentication';
 import GlobalQueries from '../../Repository/globalQueries';
+import { User } from '../../Models/User';
+import AppError from '../Errors/appError';
 
-import { User } from '../../models/User';
-import AppError from '../ERRORS/appError';
+import Emails from '../Email/Mailer';
+import Validations from '../../Utilities/Validation';
 
-import {
-    validateEmail,
-    isActive,
-    validatePhoneNumber,
-    generateAccessToken,
-} from '../../utilities/validation';
-
+const Email = new Emails();
+const Validation = new Validations();
 const authRepository = new AuthRepository();
 const globalQuery = new GlobalQueries();
 
@@ -35,7 +26,7 @@ class authStore {
                 verification_code: code,
             };
 
-            const userEmail = await validateEmail(user.email);
+            const userEmail = await Validation.validateEmail(user.email);
             if (userEmail) {
                 return res.status(400).json({
                     success: false,
@@ -43,7 +34,9 @@ class authStore {
                     message: 'Registration failure',
                 });
             }
-            const userPhone = await validatePhoneNumber(user.phone_number);
+            const userPhone = await Validation.validatePhoneNumber(
+                user.phone_number
+            );
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
@@ -61,7 +54,7 @@ class authStore {
                 }
                 if (registerUser) {
                     const message = `<p>Hello ${registerUser[0].first_name},</p>
-                  <p>Welcome to DeliveryCog Platform. Please verify your 
+                  <p>Welcome to DYC Platform. Please verify your 
                   email address with the OTP code below. It would expire after 10mins.<p>
                   <p>OTP: <b>${registerUser[0].verification_code}</b></p>`;
                     const userInfo = {
@@ -71,8 +64,10 @@ class authStore {
                         code: registerUser[0].verification_code as number,
                         message,
                     };
-                    await sendOTPMail(userInfo);
-                    const token = await generateAccessToken(registerUser);
+                    await Email.sendOTPMail(userInfo);
+                    const token = await Validation.generateAccessToken(
+                        registerUser
+                    );
                     return res.status(200).json({
                         token,
                         success: true,
@@ -115,7 +110,7 @@ class authStore {
             };
             const modifyUser = await globalQuery.updateOne(updateUser);
 
-            const message = `<p>Welcome to DeliveryCog ${modifyUser[0].first_name}
+            const message = `<p>Welcome to DYC Platform ${modifyUser[0].first_name}
            your account have been activated.<p>`;
 
             const userInfo = {
@@ -125,7 +120,7 @@ class authStore {
                 message,
             };
 
-            await welcomeMail(userInfo);
+            await Email.welcomeMail(userInfo);
             return res.status(201).json({
                 success: true,
                 message: 'Email verification successful',
@@ -138,16 +133,17 @@ class authStore {
     async authenticateUser(req: Request, res: Response, next: NextFunction) {
         const { email, password } = req.body;
         try {
-            const usercheck = Boolean(await isActive(email));
+            const usercheck = Boolean(await Validation.isActive(email));
             if (usercheck.toString() === 'false') {
                 return res.status(422).json({
                     success: false,
-                    error: 'User account is not active, Kindly activate account',
+                    message:
+                        'User account is not active, Kindly activate account',
                 });
             }
             const user = await authRepository.authenticate({ email, password });
             if (user) {
-                const token = generateAccessToken(user);
+                const token = Validation.generateAccessToken(user);
 
                 const newDate = () => {
                     const currentdate = new Date();
@@ -158,7 +154,7 @@ class authStore {
                 };
 
                 const message = `
-            <p>Welcome to DeliveryCog Team ${
+            <p>Welcome to DYC Platform ${
                 user[0].first_name
             }, we notice you just login your account at time: ${newDate()}
             if you didn't initiate this login, please change your password now.
@@ -170,7 +166,7 @@ class authStore {
                     subject: 'Login Notification',
                     message,
                 };
-                await loginConfirmationMail(userInfo);
+                await Email.loginConfirmationMail(userInfo);
 
                 const profile = {
                     token,
