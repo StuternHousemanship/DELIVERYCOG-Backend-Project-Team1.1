@@ -1,8 +1,9 @@
-import crypto, { createHmac } from 'crypto';
 import DB from '../../config/db/Connection';
 import { Encryption } from '../../Utilities/bcrypt';
 import { User } from '../../Models/User';
+import GlobalQueries from '../globalQueries';
 
+const globalQueries = new GlobalQueries();
 export default class AuthRepository {
     async createUser(user: User): Promise<User> {
         const conn = await DB.client.connect();
@@ -22,5 +23,24 @@ export default class AuthRepository {
         ]);
         conn.release();
         return result.rows[0];
+    }
+    async authenticate(
+        email: string,
+        password: string
+    ): Promise<User | undefined> {
+        const user = await globalQueries.findOne({
+            model: 'users',
+            table: 'email',
+            value: email,
+        });
+        const checkPassword = await new Encryption().compare(
+            password,
+            user.password_digest
+        );
+
+        if (!checkPassword) {
+            return undefined;
+        }
+        return user;
     }
 }

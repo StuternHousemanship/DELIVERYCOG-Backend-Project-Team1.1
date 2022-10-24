@@ -1,5 +1,5 @@
 import crypto, { createHmac } from 'crypto';
-import { Encryption } from '../../Utilities/bcrypt';
+import bcrypt, { Encryption } from '../../Utilities/bcrypt';
 import { User } from '../../Models/User';
 import GlobalQueries from '../../Repository/globalQueries';
 import { Response } from 'express';
@@ -9,13 +9,14 @@ import {
     welcome,
     sendForgotPassword,
     sendResetSuccess,
+    loginConfirmationMail,
 } from '../email/mailer';
 import AuthRepository from '../../Repository/auth/auth.repository';
 
 const globalQuery = new GlobalQueries();
 const authRepository = new AuthRepository();
 export default class AuthService {
-    public async createUser(res: Response, user: User) {
+    public async register(res: Response, user: User) {
         const userEmail = await globalQuery.exist({
             model: 'users',
             table: 'email',
@@ -77,11 +78,77 @@ export default class AuthService {
             });
         }
     }
+    public async login(res: Response, email: string, password: string) {
+        const usercheck: User = await globalQuery.findOne({
+            model: 'users',
+            table: 'email',
+            value: email,
+        });
+
+        // if (!usercheck.is_verified) {
+        //     return res.status(422).json({
+        //         success: false,
+        //         message: 'User account is not active, Kindly activate account',
+        //     });
+        // }
+
+        const user = await authRepository.authenticate(email, password);
+        if (user) {
+            const token = await bcrypt.generateAccessToken(user);
+
+            const newDate = () => {
+                const currentdate = new Date();
+                const datetime = `Last Sync: ${currentdate.getDate()}/${
+                    currentdate.getMonth() + 1
+                }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
+                return datetime;
+            };
+
+            const message = `
+            <p>Welcome to DYC Platform ${
+                user.first_name
+            }, we notice you just login your account at time: ${newDate()}
+            if you didn't initiate this login, please change your password now.
+                someone may be trying to gain access to your account</p>`;
+
+            const userInfo = {
+                first_name: user.first_name,
+                email: user.email,
+                subject: 'Login Notification',
+                message,
+            };
+
+            const profile = {
+                email: user.email,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                expiresIn: 1800,
+                token,
+            };
+            res.setHeader('Set-Cookie', token);
+            res.cookie('token', token, {
+                expires: new Date(Date.now() + 1800),
+            });
+            await loginConfirmationMail(userInfo);
+            res.status(200).json(
+                response({ message: 'Login Successfully', data: profile })
+            );
+        } else {
+            return res.status(403).json(
+                response({
+                    message: 'Failed login attempt',
+                    error: 'Incorrect password',
+                    success: false,
+                })
+            );
+        }
+    }
+
     public async activateAccount(res: Response, code: string | number) {
         const user = await globalQuery.findOne({
             model: 'users',
             table: 'verification_code',
-            value: code as number,
+            value: Number(code),
         });
         if (user.length === 0) {
             return res.status(401).json({

@@ -1,19 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import {
-    sendForgotPassword,
-    sendOTP,
-    welcome,
-} from '../../Services/email/mailer';
 import AuthService from '../../Services/auth/auth.service';
 import { User } from '../../Models/User';
 import { AppError } from '../../Utilities/errors/appError';
-import GlobalQueries from '../../Repository/globalQueries';
-import { response } from '../../Utilities/response';
-import crypto, { createHmac } from 'crypto';
-import auth from '../../Routes/auth/auth.router';
+import crypto from 'crypto';
 
 const authStore = new AuthService();
-const globalQuery = new GlobalQueries();
 
 export const create = async (req: Request, res: Response) => {
     try {
@@ -27,12 +18,25 @@ export const create = async (req: Request, res: Response) => {
             email,
             verification_code: code,
         };
-        return await authStore.createUser(res, user);
+        return await authStore.register(res, user);
     } catch (error) {
         return res.send(new AppError(`something went wrong ${error}`, 500));
     }
 };
-
+export const login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { email, password } = req.body;
+        return await authStore.login(res, email, password);
+    } catch (error) {
+        return res.send(
+            new AppError(`something went wrong here is the error ${error}`, 500)
+        );
+    }
+};
 export const activateAccount = async (req: Request, res: Response) => {
     const { code } = req.body;
     try {

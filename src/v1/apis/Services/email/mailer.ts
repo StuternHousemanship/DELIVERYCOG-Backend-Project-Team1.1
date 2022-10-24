@@ -68,3 +68,6 @@ export const sendForgotPassword = async (options: Mail) => {
 export const sendResetSuccess = async (options: Mail) => {
     sendEmail(options);
 };
+export const loginConfirmationMail = async (options: Mail) => {
+    sendEmail(options);
+};

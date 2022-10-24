@@ -41,10 +41,11 @@ class GlobalQueries {
         }
     }
 
-    async findWhere(model: string, table: string, value: string | number) {
+    // async findWhere(model: string, table: string, value: string | number) {
+    async findWhere(query: Query) {
         try {
             const conn = await DB.client.connect();
-            const sql = `SELECT * FROM ${model} WHERE ${table}='${value}' ORDER BY id DESC LIMIT 10`;
+            const sql = `SELECT * FROM ${query.model} WHERE ${query.table}='${query.value}' ORDER BY id DESC LIMIT 10`;
 
             const res = await conn.query(sql);
             conn.release();
