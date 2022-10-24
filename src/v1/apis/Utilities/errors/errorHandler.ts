@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { NextFunction, Request, Response } from 'express';
-import {AppError} from './appError';
+import { AppError } from './appError';
 
 const sendErrorDev = (err: AppError, res: Response) => {
     const statusCode = err.statusCode || 500;
@@ -56,6 +56,13 @@ const errorHandler = (
             });
         }
         if (error.name === 'NotAuthorizedException') {
+            const status = error.statusCode || 401;
+            return res.status(status).json({
+                success: false,
+                error: error.message,
+            });
+        }
+        if (error.name === 'TokenExpiredError') {
             const status = error.statusCode || 401;
             return res.status(status).json({
                 success: false,

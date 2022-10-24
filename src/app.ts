@@ -1,10 +1,11 @@
 // import dotenv
 import 'dotenv/config';
 // import express
-import express, { Application, Request, Response } from 'express';
-
+import express, { Application, Request, Response, NextFunction } from 'express';
 
 import routerV1 from './v1/apis/Routes';
+import { AppError } from './v1/apis/Utilities/errors/appError';
+import errorHandler from './v1/apis/Utilities/errors/errorHandler';
 
 // Initialize express
 const app: Application = express();
@@ -25,6 +26,12 @@ app.get('/', async (req: Request, res: Response) => {
 
 // Routes
 app.use('/api/v1', routerV1);
+
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(`can't find ${req.originalUrl} on server!`, 404));
+});
+
+app.use(errorHandler);
 
 // Listen for server connections
 const server = app.listen(PORT, () =>
