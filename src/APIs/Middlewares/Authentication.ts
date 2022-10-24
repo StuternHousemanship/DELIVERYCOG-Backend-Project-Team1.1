@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import AppError from '../../services/ERRORS/appError';
-import { User } from '../../models/User';
+import AppError from '../../Services/Errors/appError';
+import { User } from '../../Models/User';
 import GlobalQueries from '../../Repository/globalQueries';
 
 const globalQuery = new GlobalQueries();
@@ -47,12 +47,10 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
             decoded.user_id as number
         );
         if (!currentUser) {
-            return next(
-                new AppError(
-                    'the user belongs to the token nolonger exist.',
-                    401
-                )
-            );
+            return res.status(401).json({
+                message: 'the user belongs to the token nolonger exist.',
+                success: false,
+            });
         }
         req.user = currentUser;
         next();

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import DB from '../../config/db/Connection';
-import { pepper, saltRound } from '../../utilities/bcrypt';
-import { User, LoginUser } from '../../models/User';
+import DB from '../../Config/db/Connection';
+import { pepper, saltRound } from '../../Utilities/Bcrypt';
+import { User, LoginUser } from '../../Models/User';
 import GlobalQueries from '../globalQueries';
 
 const globalQuery = new GlobalQueries();
