@@ -85,12 +85,12 @@ export default class AuthService {
             value: email,
         });
 
-        // if (!usercheck.is_verified) {
-        //     return res.status(422).json({
-        //         success: false,
-        //         message: 'User account is not active, Kindly activate account',
-        //     });
-        // }
+        if (!usercheck.is_verified) {
+            return res.status(422).json({
+                success: false,
+                message: 'User account is not active, Kindly activate account',
+            });
+        }
 
         const user = await authRepository.authenticate(email, password);
         if (user) {

@@ -41,7 +41,6 @@ class GlobalQueries {
         }
     }
 
-    // async findWhere(model: string, table: string, value: string | number) {
     async findWhere(query: Query) {
         try {
             const conn = await DB.client.connect();
