@@ -15,13 +15,13 @@ const {
 } = process.env;
 
 let client: Pool;
-if (NODE_ENV === 'production') {
-    const connectionString = DATABASE_URL;
+if (NODE_ENV === 'production') { 
     client = new Pool({
-        connectionString,
-        ssl: {
-            rejectUnauthorized: false,
-        },
+        host: POSTGRES_HOST,
+        user: POSTGRES_USER,
+        database: POSTGRES_DB,
+        password: POSTGRES_PASSWORD,
+        port: Number(DATABASE_PORT),
     });
 } else if (NODE_ENV === 'development') {
     client = new Pool({
