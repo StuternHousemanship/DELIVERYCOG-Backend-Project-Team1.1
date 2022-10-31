@@ -16,7 +16,7 @@ const auth = Router();
 
 auth.post('/register', registerValidationRules(), validate, create);
 
-auth.post('/login', loginValidationRules(), validate, login, verifyToken);
+auth.post('/login', loginValidationRules(), validate, login);
 
 auth.post(
     '/account-activation',

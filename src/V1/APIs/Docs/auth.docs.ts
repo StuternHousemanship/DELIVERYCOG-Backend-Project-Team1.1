@@ -18,11 +18,10 @@ const user = [
         success: true,
         message:
             'Account successfully created, Check your mail for activation code',
-        token: 'eyJ1c2VyX2lkIjoyMCwiZW1haWwiOiJzYWxpbUBnbWFpbC5jb20iLCJpYXQiOjE2NjY1MzkyMTAsImV4cCI6MTY2NjU0MTAxMH0.',
     },
     {
         success: false,
-        email: 'Email is already taken',
+        error: 'Email is already taken',
         message: 'Registration failed',
     },
     {
@@ -35,7 +34,7 @@ const user = [
         success: true,
     },
     {
-        email: 'please enter a valid email',
+        error: 'please enter a valid email',
         message: 'Action unsuccessful',
         success: false,
     },
@@ -262,7 +261,7 @@ const authRouteDoc = {
             ...verifyAccount,
         },
     },
-    '/api/v1/auth/sign-in': {
+    '/api/v1/auth/login': {
         post: {
             ...signInUser,
         },

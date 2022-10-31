@@ -42,14 +42,16 @@ export const verifyToken = async (
         if (!decoded) {
             return next(new AppError('Invalid authorization token', 401));
         }
-        const currentUser: any = await User.query().findById(decoded.user_id as number);
-        console.log(currentUser);
+        const currentUser: any = await User.query().findById(
+            decoded.user_id as number
+        );
         if (!currentUser) {
             return res.status(401).json({
                 message: 'the user belongs to the token nolonger exist.',
                 success: false,
             });
         }
+        req.user = currentUser;
         next();
     } catch (error) {
         return next(

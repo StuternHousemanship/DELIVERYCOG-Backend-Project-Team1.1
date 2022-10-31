@@ -34,8 +34,8 @@ export default class AuthService {
             if (userEmail) {
                 return res.status(400).json({
                     success: false,
-                    email: 'Email is already taken',
-                    message: 'Registration failure',
+                    error:' Email is already taken',
+                    message: 'Registration failed!',
                 });
             }
             const userPhone = await validation.validatePhoneNumber(
@@ -44,15 +44,18 @@ export default class AuthService {
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
-                    email: 'Phone number is already taken',
-                    message: 'Registration failed',
+                    error:'Phone number is already taken',
+                    message: 'Registration failed!',
                 });
             }
             if (userEmail === undefined && userPhone === undefined) {
-                const registerUser = await authRepository.createUser(user);
+                const registerUser: UserType = await authRepository.createUser(
+                    user
+                );
                 if (!registerUser) {
                     return res.status(400).json({
                         success: false,
+                        error:'Unable to create user',
                         message: 'Registration failed',
                     });
                 }
@@ -90,6 +93,14 @@ export default class AuthService {
                 '=',
                 email
             );
+           
+            if(usercheck.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    error:'Incorrect Email or password',
+                    message: 'Login failed!',
+                });
+            }
             if (!usercheck[0].is_verified) {
                 return res.status(422).json({
                     success: false,
@@ -132,7 +143,7 @@ export default class AuthService {
                 });
                 await mail.sendLoginConfirmation(userInfo);
                 res.status(200).json(
-                    response({ message: 'Login Successfully', data: profile })
+                    response({ message: 'Login Successful', data: profile })
                 );
             } else {
                 return res.status(403).json(
