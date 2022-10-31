@@ -1,5 +1,7 @@
 // import dotenv
 import 'dotenv/config';
+//import morgan
+import logger from 'morgan';
 // import express
 import express, { Application, Request, Response, NextFunction } from 'express';
 
@@ -17,6 +19,9 @@ const address = `0.0.0.0:${PORT}`;
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+//use morgan
+app.use(logger('dev'));
 
 // Define index route
 app.get('/', async (req: Request, res: Response) => {

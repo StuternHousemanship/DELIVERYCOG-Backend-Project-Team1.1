@@ -15,14 +15,15 @@ const {
 } = process.env;
 
 let client: Pool;
-if (NODE_ENV === 'production') { 
+if (NODE_ENV === 'production') {
     client = new Pool({
         host: POSTGRES_HOST,
-        user: POSTGRES_USER,
+        user: 'POSTGRES_USER',
         database: POSTGRES_DB,
         password: POSTGRES_PASSWORD,
         port: Number(DATABASE_PORT),
     });
+    console.log(`${NODE_ENV} CONNECTED`);
 } else if (NODE_ENV === 'development') {
     client = new Pool({
         host: POSTGRES_HOST,
@@ -31,6 +32,7 @@ if (NODE_ENV === 'production') {
         password: POSTGRES_PASSWORD,
         port: Number(DATABASE_PORT),
     });
+    console.log(`${NODE_ENV} CONNECTED`);
 } else {
     client = new Pool({
         host: POSTGRES_HOST,
@@ -39,6 +41,7 @@ if (NODE_ENV === 'production') {
         password: POSTGRES_PASSWORD,
         port: Number(DATABASE_PORT),
     });
+    console.log(`${NODE_ENV} CONNECTED`);
 }
 
 export default {

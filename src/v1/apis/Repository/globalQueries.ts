@@ -1,6 +1,7 @@
 import DB from '../config/db/Connection';
 import { AppError } from '../Utilities/errors/appError';
 import { Query } from '../Models/globalQueries';
+import { NextFunction } from 'express';
 class GlobalQueries {
     async findOne(query: Query) {
         try {
@@ -35,7 +36,7 @@ class GlobalQueries {
             const res = await conn.query(sql);
             conn.release();
 
-            return res.rowCount > 0;
+            return res.rowCount > 0 ? true : false;
         } catch (error) {
             throw new AppError(`${error}`, 404);
         }
