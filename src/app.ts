@@ -1,14 +1,21 @@
 // import dotenv
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
 // import express
 import express, { Application, Request, Response, NextFunction } from 'express';
 
-import routerV1 from './v1/apis/Routes';
-import { AppError } from './v1/apis/Utilities/errors/appError';
-import errorHandler from './v1/apis/Utilities/errors/errorHandler';
+import routerV1 from './V1/APIs/Routes';
+import { AppError } from './V1/APIs/Utilities/Errors/appError';
+import errorHandler from './V1/APIs/Utilities/Errors/errorHandler';
+import setupDb from './V1/APIs/Config/db/dbSetup';
+
+dotenv.config({ path: './src/V1/APIs/Config/.env' });
 
 // Initialize express
 const app: Application = express();
+
+// Bind all Models to a knex instance.
+setupDb();
 
 // Port
 const PORT: number = Number(process.env.PORT) || 3000;
