@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('password_digest', 100).notNullable();
         table.bigInteger('phone_number').notNullable();
         table.string('email', 100).unique().notNullable();
-        table.integer('verification_code', 10).notNullable();
+        table.integer('verification_code', 10);
         table.boolean('is_verified').notNullable().defaultTo('false');
         table.timestamps(true, true);
     });

@@ -81,7 +81,6 @@ export default class AuthService {
                 }
             }
         } catch (error) {
-            console.log(error);
             return next(new AppError(`something went wrong ${error}`, 500));
         }
     }
@@ -155,7 +154,6 @@ export default class AuthService {
                 );
             }
         } catch (error) {
-            console.log(error);
             return next(
                 new AppError(
                     `something went wrong here is the error ${error}`,
