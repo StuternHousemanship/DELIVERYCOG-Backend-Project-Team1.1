@@ -8,8 +8,10 @@
         "lint": "eslint --ext .ts . --fix",
         "prettier": "prettier --config .prettierrc --ignore-path .gitignore  --write './src/**/*.+(js|ts)'",
         "format": "npm run prettier ",
-        "migrate": "npx knex migrate:latest --knexfile ./src/V1/APIs/Config/knexfile.ts",
-        "down": "npx knex migrate:down  --knexfile ./src/V1/APIs/Config/knexfile.ts",
+        "migrate:dev:up": "npx knex migrate:latest --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
+        "migrate:dev:down": "npx knex migrate:down  --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
+        "migrate:prod:up": "npx knex migrate:latest --knexfile ./src/V1/APIs/Config/knexfile.ts --env production ",
+        "migrate:prod:down": "npx knex migrate:down  --knexfile ./src/V1/APIs/Config/knexfile.ts --env production ",
         "dev": "npm run build && nodemon ./src/app.ts",
         "build": "tsc"
     },
