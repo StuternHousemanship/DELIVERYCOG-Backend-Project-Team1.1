@@ -4,7 +4,7 @@
     "description": "An interstate delivcery platform for people to send items to other geographical states through individuals travelling to those locations.",
     "main": "app.js",
     "scripts": {
-        "start": "node dist/app.js",
+        "start": "node dist/app.ts",
         "lint": "eslint --ext .ts . --fix",
         "prettier": "prettier --config .prettierrc --ignore-path .gitignore  --write './src/**/*.+(js|ts)'",
         "format": "npm run prettier ",

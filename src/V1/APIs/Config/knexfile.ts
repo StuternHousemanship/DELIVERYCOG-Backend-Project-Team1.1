@@ -11,9 +11,12 @@ const config: { [key: string]: Knex.Config } = {
     development: {
         client: 'postgresql',
         connection: {
-            database: `${process.env.POSTGRES_DB}`,
-            user: `${process.env.POSTGRES_USER}`,
-            password: `${process.env.POSTGRES_PASSWORD}`,
+            // database: `${process.env.POSTGRES_DB}`,
+            // user: `${process.env.POSTGRES_USER}`,
+            // password: `${process.env.POSTGRES_PASSWORD}`,
+            database: 'cogdeliveryorderdb',
+            user: 'postgres',
+            password: 'dududon',
         },
         pool: {
             min: 2,
