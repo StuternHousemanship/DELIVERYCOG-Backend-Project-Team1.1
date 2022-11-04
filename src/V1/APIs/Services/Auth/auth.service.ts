@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import crypto, { createHmac } from 'crypto';
+import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { AppError } from '../../Utilities/Errors/appError';
 import { UserType, User } from '../../Models/User';
 import { response } from '../../Utilities/response';
-import bcrypt, { Encryption } from '../../Utilities/bcrypt';
+import bcrypt from '../../Utilities/bcrypt';
 import Email from '../Email/mailer';
 import AuthRepository from '../../Repository/auth/auth.repository';
 import Validations from '../../Utilities/Validations/validation';
@@ -170,7 +170,7 @@ export default class AuthService {
         try {
             const { code } = req.body;
             const user: any = await User.query().where(
-                'verification_code', 
+                'verification_code',
                 code
             );
             if (user.length === 0) {
@@ -218,29 +218,30 @@ export default class AuthService {
         res: Response,
         next: NextFunction
     ) {
-        const { email } = req.body;
-        const code = crypto.randomInt(100000, 1000000);
-        const userEmail = await validation.validateEmail('email', email);
+        try {
+            const { email } = req.body;
+            const code = crypto.randomInt(100000, 1000000);
+            const userEmail = await validation.validateEmail('email', email);
 
-        if (!userEmail) {
-            return res.status(404).json({
-                success: false,
-                error: `User with email: ${email} not found`,
-                message: 'Forgot Password failed!',
-            });
-        }
-        const updateUserCode = await User.query().patch({ 'verification_code': code }).where('email', email);
+            if (!userEmail) {
+                return res.status(404).json({
+                    success: false,
+                    error: `User with email: ${email} not found`,
+                    message: 'Forgot Password failed!',
+                });
+            }
+            const updateUserCode = await User.query().patch({ 'verification_code': code }).where('email', email);
 
-        if (!updateUserCode) {
-            return res.status(500).json({
-                success: false,
-                error: `Forgot Password Failed`,
-                message: `User with ${email} failed`
-            });
-        }
-        const user: any = await User.query().where('email', email);
+            if (!updateUserCode) {
+                return res.status(500).json({
+                    success: false,
+                    error: `Forgot Password Failed`,
+                    message: `User with ${email} failed`
+                });
+            }
+            const user: any = await User.query().where('email', email);
 
-        const message = `<p>
+            const message = `<p>
                         ${user[0].first_name}, <br> 
                         Someone has requested a code to change your password. You can do this through the link below.  <br> 
                         Code: ${user[0].verification_code}
@@ -249,23 +250,31 @@ export default class AuthService {
                         <br> 
                         Thanks,  <br> 
                         Team DeliveryCog <p/>`;
-        const data = {
-            email,
-            first_name: user[0].first_name,
-            code: user[0].verification_code,
-            subject: 'DeliveryCog Password Reset Sent',
-            message,
-        };
+            const data = {
+                email,
+                first_name: user[0].first_name,
+                code: user[0].verification_code,
+                subject: 'DeliveryCog Password Reset Sent',
+                message,
+            };
 
-        //TODO refactor email to house message and only take required data(clean up)
-        mail.sendForgotPassword(data);
+            //TODO refactor email to house message and only take required data(clean up)
+            mail.sendForgotPassword(data);
 
-        return res.status(200).json(
-            response({
-                success: true,
-                message: 'Password Reset Sent',
-            })
-        );
+            return res.status(200).json(
+                response({
+                    success: true,
+                    message: 'Password Reset Sent',
+                })
+            );
+        } catch (error) {
+            return next(
+                new AppError(
+                    `something went wrong here is the error ${error}`,
+                    500
+                )
+            );
+        }
     }
 
     public async resetPassword(
@@ -273,67 +282,77 @@ export default class AuthService {
         res: Response,
         next: NextFunction
     ) {
-        const { password, confirm_password, code, email } = req.body;
-        const newPassword = password === confirm_password ? password : res.status(400).json(
-            response({
-                error: "password doesn't match",
-                message: 'Ensure password is same with comfirm_password',
-                success: false,
-            })
-        );
-        const userExist = await validation.validateEmail('email', email);
-
-        if (!userExist) {
-            return res.status(404).json({
-                success: false,
-                error: `User with email: ${email} not found`,
-                message: 'Forgot Password failed!',
-            });
-        }
-        const confirmCode = await validation.validateEmail('verification_code', code);
-
-        if (!confirmCode) {
-            return res.status(400).json(
+        try {
+            const { password, confirm_password, code, email } = req.body;
+            const newPassword = password === confirm_password ? password : res.status(400).json(
                 response({
-                    error: 'Invalid code',
-                    message: 'Please provide a valide code',
+                    error: "password doesn't match",
+                    message: 'Ensure password is same with comfirm_password',
                     success: false,
                 })
             );
-        }
-        const userData = { password, code, email };
-        const resetUser: UserType = await authRepository.resetUser(userData);
+            const userExist = await validation.validateEmail('email', email);
 
-
-        if (!resetUser) {
-            return res.status(500).json(
-                response({
-                    error: 'Error updating password',
-                    message: `Password for user with email ${email} not updated`,
+            if (!userExist) {
+                return res.status(404).json({
                     success: false,
-                })
-            );
-        }
+                    error: `User with email: ${email} not found`,
+                    message: 'Forgot Password failed!',
+                });
+            }
+            const confirmCode = await validation.validateEmail('verification_code', code);
 
-        const message = `<p>
+            if (!confirmCode) {
+                return res.status(400).json(
+                    response({
+                        error: 'Invalid code',
+                        message: 'Please provide a valide code',
+                        success: false,
+                    })
+                );
+            }
+            const userData = { password, code, email };
+            const resetUser: UserType = await authRepository.resetUser(userData);
+
+
+            if (!resetUser) {
+                return res.status(500).json(
+                    response({
+                        error: 'Error updating password',
+                        message: `Password for user with email ${email} not updated`,
+                        success: false,
+                    })
+                );
+            }
+
+            const message = `<p>
                     Hi ${resetUser.first_name}, <br> 
                     You have successfully reset your password.
                       <br> 
                     Team DeliveryCog <p/>`;
 
-        const data = {
-            email: email,
-            first_name: resetUser.first_name,
-            subject: 'Password Reset Successfully',
-            message,
-        };
-        
-        await mail.sendResetSuccess(data);
+            const data = {
+                email: email,
+                first_name: resetUser.first_name,
+                subject: 'Password Reset Successfully',
+                message,
+            };
 
-        return res.status(200).json(response({
-            success: true,
-            message: 'Password successfully reset'
-        }));
- 
+            await mail.sendResetSuccess(data);
+
+            return res.status(200).json(response({
+                success: true,
+                message: 'Password successfully reset'
+            }));
+        }
+        catch (error) {
+            return next(
+                new AppError(
+                    `something went wrong here is the error ${error}`,
+                    500
+                )
+            );
+        }
+
     }
 }
