@@ -1,19 +1,19 @@
-import { User } from '../../Models/User';
+import { User, UserType } from '../../Models/User';
 
 export default class Validation {
-    validateEmail = async (column:string, value: string): Promise<string | undefined> => {
+    where = async (column: string, value: string): Promise<UserType | undefined> => {
         const user: any = await User.query().where(column, value);
         if (user.length > 0) {
             return user[0];
         }
         return undefined;
     };
-    validatePhoneNumber = async (phoneNumber: number): Promise<number | undefined> => {
-        const userphoneNumber: any = await User.query().where(
-            'phone_number', phoneNumber
-        );
-        if (userphoneNumber.length > 0) {
-            return userphoneNumber[0].phone_number;
+    whereAnd = async (column: string, value: string, column2: string, value2: string): Promise<UserType | undefined> => {
+        const user: any = await User.query().where(
+            column, value
+        ).andWhere(column2, value2);
+        if (user.length > 0) {
+            return user[0];
         }
         return undefined;
     };

@@ -31,7 +31,7 @@ export default class AuthService {
                 verification_code: code,
             };
 
-            const userEmail = await validation.validateEmail('email', user.email);
+            const userEmail = await validation.where('email', user.email);
 
             if (userEmail) {
                 return res.status(400).json({
@@ -40,9 +40,7 @@ export default class AuthService {
                     message: 'Registration failed!',
                 });
             }
-            const userPhone = await validation.validatePhoneNumber(
-                user.phone_number
-            );
+            const userPhone = await validation.where('phone_number', user.phone_number);
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
@@ -89,19 +87,16 @@ export default class AuthService {
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
-            const usercheck: any = await User.query().where(
-                'email',
-                email
-            );
 
-            if (usercheck.length === 0) {
+            const usercheck = await validation.where('email', email);
+            if (!usercheck) {
                 return res.status(404).json({
                     success: false,
                     error: 'Incorrect Email or password',
                     message: 'Login failed!',
                 });
             }
-            if (!usercheck[0].is_verified) {
+            if (!usercheck.is_verified) {
                 return res.status(422).json({
                     success: false,
                     message:
@@ -168,32 +163,36 @@ export default class AuthService {
         next: NextFunction
     ) {
         try {
-            const { code } = req.body;
-            const user: any = await User.query().where(
-                'verification_code',
-                code
-            );
-            if (user.length === 0) {
+            const { code, email } = req.body;
+
+            const user: UserType | undefined = await validation.whereAnd('verification_code', code, 'email', email);
+            if (!user) {
+                return res.status(404).json({
+                    message: 'Resource for user not found',
+                    success: false,
+                });
+            }
+            if (!user) {
                 return res.status(401).json({
                     message: 'Invalid code',
                     success: false,
                 });
-            }
-            if (user[0].is_verified) {
+            } 
+
+            if (user.is_verified) {
                 return res.status(409).json({
                     message: 'Email already verified',
                     success: false,
                 });
             }
-            const modifyUser: any = await User.query()
-                .patch({ is_verified: 'true' })
-                .where('verification_code', '=', code);
-            const message = `<p>Welcome to DeliveryCog ${user[0].first_name}
+            const modifyUser: false | UserType[] | User[] = await authRepository.activateAccount({code, email});
+
+            const message = `<p>Welcome to DeliveryCog ${user.first_name}
                              your account have been activated.<p>`;
             if (modifyUser) {
                 const userInfo = {
-                    first_name: user[0].first_name,
-                    email: user[0].email,
+                    first_name: user.first_name,
+                    email: user.email,
                     subject: 'Welcome to DeliveryCog',
                     message,
                 };
@@ -221,7 +220,7 @@ export default class AuthService {
         try {
             const { email } = req.body;
             const code = crypto.randomInt(100000, 1000000);
-            const userEmail = await validation.validateEmail('email', email);
+            const userEmail = await validation.where('email', email);
 
             if (!userEmail) {
                 return res.status(404).json({
@@ -230,16 +229,16 @@ export default class AuthService {
                     message: 'Forgot Password failed!',
                 });
             }
-            const updateUserCode = await User.query().patch({ 'verification_code': code }).where('email', email);
+            const user: false | UserType[] = await authRepository.forgotPassword({ code, email })
 
-            if (!updateUserCode) {
+            if (!user) {
                 return res.status(500).json({
                     success: false,
                     error: `Forgot Password Failed`,
                     message: `User with ${email} failed`
                 });
             }
-            const user: any = await User.query().where('email', email);
+
 
             const message = `<p>
                         ${user[0].first_name}, <br> 
@@ -291,7 +290,7 @@ export default class AuthService {
                     success: false,
                 })
             );
-            const userExist = await validation.validateEmail('email', email);
+            const userExist = await validation.where('email', email);
 
             if (!userExist) {
                 return res.status(404).json({
@@ -300,7 +299,7 @@ export default class AuthService {
                     message: 'Forgot Password failed!',
                 });
             }
-            const confirmCode = await validation.validateEmail('verification_code', code);
+            const confirmCode = await validation.where('verification_code', code);
 
             if (!confirmCode) {
                 return res.status(400).json(
@@ -312,7 +311,7 @@ export default class AuthService {
                 );
             }
             const userData = { password, code, email };
-            const resetUser: UserType|false = await authRepository.resetUser(userData);
+            const resetUser: UserType | false = await authRepository.resetUser(userData);
 
             if (!resetUser) {
                 return res.status(500).json(
