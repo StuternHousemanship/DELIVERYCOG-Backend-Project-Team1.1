@@ -1,4 +1,4 @@
-import { Orders, OrderType } from '../Models/orders';
+import { Orders, OrderType } from '../../Models/orders';
 
 export default class OrderRepository {
     async createOrder(orders: OrderType): Promise<OrderType> {
@@ -10,4 +10,6 @@ export default class OrderRepository {
         });
         return newOrder;
     }
+
+    // async getAllOrders()
 }
