@@ -19,8 +19,8 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class AuthService {
     public async registerUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const { firstName, lastName, password, phoneNumber, email } =
-                req.body;
+            const { firstName, lastName, password, phoneNumber, email } = req.body;
+
             const code = crypto.randomInt(100000, 1000000);
             const user = {
                 first_name: firstName,
@@ -30,11 +30,13 @@ export default class AuthService {
                 email,
                 verification_code: code,
             };
+            
             const userEmail = await validation.validateEmail(user.email);
+            
             if (userEmail) {
                 return res.status(400).json({
                     success: false,
-                    error:' Email is already taken',
+                    error: ' Email is already taken',
                     message: 'Registration failed!',
                 });
             }
@@ -44,7 +46,7 @@ export default class AuthService {
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
-                    error:'Phone number is already taken',
+                    error: 'Phone number is already taken',
                     message: 'Registration failed!',
                 });
             }
@@ -55,7 +57,7 @@ export default class AuthService {
                 if (!registerUser) {
                     return res.status(400).json({
                         success: false,
-                        error:'Unable to create user',
+                        error: 'Unable to create user',
                         message: 'Registration failed',
                     });
                 }
@@ -92,11 +94,11 @@ export default class AuthService {
                 '=',
                 email
             );
-           
-            if(usercheck.length === 0) {
+
+            if (usercheck.length === 0) {
                 return res.status(404).json({
                     success: false,
-                    error:'Incorrect Email or password',
+                    error: 'Incorrect Email or password',
                     message: 'Login failed!',
                 });
             }
@@ -191,7 +193,7 @@ export default class AuthService {
                 .patch({ is_verified: 'true' })
                 .where('verification_code', '=', code);
             const message = `<p>Welcome to DeliveryCog ${user[0].first_name}
-         your account have been activated.<p>`;
+                             your account have been activated.<p>`;
             if (modifyUser) {
                 const userInfo = {
                     first_name: user[0].first_name,
@@ -214,5 +216,59 @@ export default class AuthService {
                 )
             );
         }
+    }
+    public async forgotPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const {email}= req.body;
+        const code = crypto.randomInt(100000, 1000000);
+        const userEmail = await validation.validateEmail(email); 
+        
+            if (!userEmail) {
+                return res.status(404).json({
+                    success: false,
+                    error: `User with email: ${email} not found`,
+                    message: 'Forgot Password failed!',
+                });
+            }
+        const updateUserCode = await User.query().patch({'verification_code': code}).where('email', email); 
+
+        if (!updateUserCode) {
+            return res.status(500).json({
+                success: false,
+                error: `Forgot Password Failed`,
+                message: `User with ${email} failed` 
+            });
+        }
+        const user:any = await User.query().where('email', email);
+        
+        const message = `<p>
+                        ${user[0].first_name}, <br> 
+                        Someone has requested a code to change your password. You can do this through the link below.  <br> 
+                        Code: ${user[0].verification_code}
+                        <br> 
+                        If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one.
+                        <br> 
+                        Thanks,  <br> 
+                        Team DeliveryCog <p/>`;
+        const data = {
+            email,
+            first_name: user[0].first_name,
+            code: user[0].verification_code,
+            subject: 'DeliveryCog Password Reset Sent',
+            message,
+        };
+        
+        //TODO refactor email to house message and only take required data(clean up)
+        mail.sendForgotPassword(data);
+
+        return res.status(200).json(
+            response({
+                success: true,
+                message: 'Password Reset Sent',
+            })
+        );
     }
 }

@@ -2,19 +2,17 @@ import { User } from '../../Models/User';
 
 export default class Validation {
     validateEmail = async (email: string): Promise<string | undefined> => {
-        const user: any = await User.query().where('email', '=', email);
+        const user: any = await User.query().where('email', email);
         if (user.length > 0) {
             return user[0].email;
         }
         return undefined;
-    };
-
+    }; 
     validatePhoneNumber = async (
         phoneNumber: number
     ): Promise<number | undefined> => {
         const userphoneNumber: any = await User.query().where(
-            'phone_number',
-            '=',
+            'phone_number', 
             phoneNumber
         );
         if (userphoneNumber.length > 0) {
@@ -24,7 +22,7 @@ export default class Validation {
     };
 
     isVerified = async (email: string): Promise<boolean | undefined> => {
-        const user: any = await User.query().where('email', '=', email);
+        const user: any = await User.query().where('email', email);
         if (user.is_verified) {
             return true;
         }

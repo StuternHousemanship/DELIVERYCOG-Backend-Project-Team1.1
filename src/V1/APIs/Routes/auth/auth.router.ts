@@ -2,13 +2,13 @@ import { Router } from 'express';
 import {
     create,
     login,
-    activateAccount,
+    activateAccount,forgotPassword,resetPassword
 } from '../../Controllers/Auth/auth.controller';
 import { validate } from '../../Middlewares/validateRequest.middleware';
 import {
     otpValidationRules,
     registerValidationRules,
-    loginValidationRules,
+    loginValidationRules,emailValidationRules,restPasswordValidationRules
 } from '../../Utilities/Validations/reqValidation';
 import { verifyToken } from '../../Middlewares/verifyToken.middleware';
 
@@ -23,6 +23,14 @@ auth.post(
     otpValidationRules(),
     validate,
     activateAccount
+);
+auth.post('/forgot-password', emailValidationRules(), validate, forgotPassword);
+
+auth.post(
+    '/reset-password',
+    restPasswordValidationRules(),
+    validate,
+    resetPassword
 );
 
 export default auth;

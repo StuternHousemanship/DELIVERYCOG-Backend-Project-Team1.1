@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import  { Request, Response, NextFunction } from 'express';
 import AuthService from '../../Services/Auth/auth.service';
 const authStore = new AuthService();
 
@@ -22,4 +22,18 @@ export const activateAccount = async (
     next: NextFunction
 ) => {
     return await authStore.activateAccount(req, res, next);
+};
+export const forgotPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    return await authStore.forgotPassword(req, res, next);
+};
+export const resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    return await authStore.resetPassword(req, res, next);
 };
