@@ -312,8 +312,7 @@ export default class AuthService {
                 );
             }
             const userData = { password, code, email };
-            const resetUser: UserType = await authRepository.resetUser(userData);
-
+            const resetUser: UserType|false = await authRepository.resetUser(userData);
 
             if (!resetUser) {
                 return res.status(500).json(

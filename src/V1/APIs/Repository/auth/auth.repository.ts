@@ -28,7 +28,7 @@ export default class AuthRepository {
             password_digest: hashPassword,
         });
 
-        let newUser = updateUserPassword ? user : false;
+        let newUser: UserType | false = updateUserPassword ? user : false;
 
         return newUser;
     }
