@@ -5,7 +5,8 @@ import type { Knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 
 dotenv.config({ path: '.env' });
-console.log(__dirname + '/db/seeds')
+console.log(__dirname + '/db/seeds');
+console.log(process.env.POSTGRES_DB);
 
 const config: { [key: string]: Knex.Config } = {
     development: {
@@ -13,8 +14,9 @@ const config: { [key: string]: Knex.Config } = {
         connection: {
             database: `${process.env.POSTGRES_DB}`,
             user: `${process.env.POSTGRES_USER}`,
-            password: `${process.env.POSTGRES_PASSWORD}`,
+            password: `${process.env.POSTGRES_PASSWORD}`,            
         },
+        
         pool: {
             min: 2,
             max: 10,

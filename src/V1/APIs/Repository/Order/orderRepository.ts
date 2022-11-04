@@ -11,5 +11,4 @@ export default class OrderRepository {
         return newOrder;
     }
 
-    // async getAllOrders()
 }

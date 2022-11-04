@@ -8,13 +8,11 @@ export default class orderController {
    return await newOrder.createOrders(req, res, next)
 };
    public async fetchAllOrder(req: Request, res: Response, next: NextFunction)  {
-   return await newOrder.getAllOrder(req, res, next);
+   return await newOrder.getAllOrder (req, res, next);
+};
+   public async fetchOrderById(req: Request, res: Response, next: NextFunction) {
+      return await newOrder.getOrderById(req, res, next);
+   };  
 }
-}
-// export const createOrder = async (req: Request, res: Response,next: NextFunction) => {
-//    return await newOrder.createOrders(req, res, next);
-// };
-// export const fetchAllOrder = async (req: Request, res: Response, next: NextFunction) => {
-//    return await newOrder.getAllOrder(req, res, next);
-// }
+
 
