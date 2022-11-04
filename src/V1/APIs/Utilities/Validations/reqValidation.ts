@@ -88,8 +88,8 @@ export const restPasswordValidationRules = () => {
             .normalizeEmail()
             .withMessage('please enter a valid email'),
         check('code')
-            .isLength({ min: 6 })
-            .isNumeric()
+            .isLength({ min: 6, max: 6 })
+            .isNumeric()//TODO: check if message error is returned when triggered
             .withMessage('code must be at least 6 character long'),
     ];
 };

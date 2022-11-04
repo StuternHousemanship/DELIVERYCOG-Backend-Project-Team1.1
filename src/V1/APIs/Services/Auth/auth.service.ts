@@ -30,9 +30,9 @@ export default class AuthService {
                 email,
                 verification_code: code,
             };
-            
-            const userEmail = await validation.validateEmail(user.email);
-            
+
+            const userEmail = await validation.validateEmail('email', user.email);
+
             if (userEmail) {
                 return res.status(400).json({
                     success: false,
@@ -91,7 +91,6 @@ export default class AuthService {
             const { email, password } = req.body;
             const usercheck: any = await User.query().where(
                 'email',
-                '=',
                 email
             );
 
@@ -114,15 +113,13 @@ export default class AuthService {
                 const token = await bcrypt.generateAccessToken(user);
                 const newDate = () => {
                     const currentdate = new Date();
-                    const datetime = `Last Sync: ${currentdate.getDate()}/${
-                        currentdate.getMonth() + 1
-                    }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
+                    const datetime = `Last Sync: ${currentdate.getDate()}/${currentdate.getMonth() + 1
+                        }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
                     return datetime;
                 };
                 const message = `
-            <p>Welcome to DYC Platform ${
-                user[0].first_name
-            }, we notice you just login your account at time: ${newDate()}
+            <p>Welcome to DYC Platform ${user[0].first_name
+                    }, we notice you just login your account at time: ${newDate()}
             if you didn't initiate this login, please change your password now.
                 someone may be trying to gain access to your account</p>`;
                 const userInfo = {
@@ -173,8 +170,7 @@ export default class AuthService {
         try {
             const { code } = req.body;
             const user: any = await User.query().where(
-                'verification_code',
-                '=',
+                'verification_code', 
                 code
             );
             if (user.length === 0) {
@@ -222,28 +218,28 @@ export default class AuthService {
         res: Response,
         next: NextFunction
     ) {
-        const {email}= req.body;
+        const { email } = req.body;
         const code = crypto.randomInt(100000, 1000000);
-        const userEmail = await validation.validateEmail(email); 
-        
-            if (!userEmail) {
-                return res.status(404).json({
-                    success: false,
-                    error: `User with email: ${email} not found`,
-                    message: 'Forgot Password failed!',
-                });
-            }
-        const updateUserCode = await User.query().patch({'verification_code': code}).where('email', email); 
+        const userEmail = await validation.validateEmail('email', email);
+
+        if (!userEmail) {
+            return res.status(404).json({
+                success: false,
+                error: `User with email: ${email} not found`,
+                message: 'Forgot Password failed!',
+            });
+        }
+        const updateUserCode = await User.query().patch({ 'verification_code': code }).where('email', email);
 
         if (!updateUserCode) {
             return res.status(500).json({
                 success: false,
                 error: `Forgot Password Failed`,
-                message: `User with ${email} failed` 
+                message: `User with ${email} failed`
             });
         }
-        const user:any = await User.query().where('email', email);
-        
+        const user: any = await User.query().where('email', email);
+
         const message = `<p>
                         ${user[0].first_name}, <br> 
                         Someone has requested a code to change your password. You can do this through the link below.  <br> 
@@ -260,7 +256,7 @@ export default class AuthService {
             subject: 'DeliveryCog Password Reset Sent',
             message,
         };
-        
+
         //TODO refactor email to house message and only take required data(clean up)
         mail.sendForgotPassword(data);
 
@@ -270,5 +266,74 @@ export default class AuthService {
                 message: 'Password Reset Sent',
             })
         );
+    }
+
+    public async resetPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const { password, confirm_password, code, email } = req.body;
+        const newPassword = password === confirm_password ? password : res.status(400).json(
+            response({
+                error: "password doesn't match",
+                message: 'Ensure password is same with comfirm_password',
+                success: false,
+            })
+        );
+        const userExist = await validation.validateEmail('email', email);
+
+        if (!userExist) {
+            return res.status(404).json({
+                success: false,
+                error: `User with email: ${email} not found`,
+                message: 'Forgot Password failed!',
+            });
+        }
+        const confirmCode = await validation.validateEmail('verification_code', code);
+
+        if (!confirmCode) {
+            return res.status(400).json(
+                response({
+                    error: 'Invalid code',
+                    message: 'Please provide a valide code',
+                    success: false,
+                })
+            );
+        }
+        const userData = { password, code, email };
+        const resetUser: UserType = await authRepository.resetUser(userData);
+
+
+        if (!resetUser) {
+            return res.status(500).json(
+                response({
+                    error: 'Error updating password',
+                    message: `Password for user with email ${email} not updated`,
+                    success: false,
+                })
+            );
+        }
+
+        const message = `<p>
+                    Hi ${resetUser.first_name}, <br> 
+                    You have successfully reset your password.
+                      <br> 
+                    Team DeliveryCog <p/>`;
+
+        const data = {
+            email: email,
+            first_name: resetUser.first_name,
+            subject: 'Password Reset Successfully',
+            message,
+        };
+        
+        await mail.sendResetSuccess(data);
+
+        return res.status(200).json(response({
+            success: true,
+            message: 'Password successfully reset'
+        }));
+ 
     }
 }

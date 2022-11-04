@@ -16,11 +16,24 @@ export default class AuthRepository {
         });
         return newUser;
     }
-    async authenticate(
-        email: string,
-        password: string
-    ): Promise<UserType[] | undefined> {
-        const user: any = await User.query().where('email', '=', email);
+    async resetUser(userData: { password: string, email: string }) {
+
+        const user: any = await User.query().where('email', userData.email);
+
+        const hashPassword = await new Encryption().bcrypt(
+            userData.password
+        );
+
+        const updateUserPassword: any = await User.query().where('email', userData.email).patch({
+            password_digest: hashPassword,
+        });
+
+        let newUser = updateUserPassword ? user : false;
+
+        return newUser;
+    }
+    async authenticate(email: string, password: string): Promise<UserType[] | undefined> {
+        const user: any = await User.query().where('email', email);
         const checkPassword = await new Encryption().compare(
             password,
             user[0].password_digest
