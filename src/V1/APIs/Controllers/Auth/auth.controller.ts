@@ -37,3 +37,10 @@ export const resetPassword = async (
 ) => {
     return await authStore.resetPassword(req, res, next);
 };
+export const logout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    return await authStore.logout(req, res, next);
+};

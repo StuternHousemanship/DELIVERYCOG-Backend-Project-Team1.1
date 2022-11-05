@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
     create,
+    logout,
     login,
     activateAccount,forgotPassword,resetPassword
 } from '../../Controllers/Auth/auth.controller';
@@ -31,6 +32,10 @@ auth.post(
     restPasswordValidationRules(),
     validate,
     resetPassword
+);
+auth.delete(
+    '/logout',
+    logout
 );
 
 export default auth;

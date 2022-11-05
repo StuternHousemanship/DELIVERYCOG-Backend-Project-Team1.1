@@ -177,7 +177,7 @@ export default class AuthService {
                     message: 'Invalid code',
                     success: false,
                 });
-            } 
+            }
 
             if (user.is_verified) {
                 return res.status(409).json({
@@ -185,7 +185,7 @@ export default class AuthService {
                     success: false,
                 });
             }
-            const modifyUser: false | UserType[] | User[] = await authRepository.activateAccount({code, email});
+            const modifyUser: false | UserType[] | User[] = await authRepository.activateAccount({ code, email });
 
             const message = `<p>Welcome to DeliveryCog ${user.first_name}
                              your account have been activated.<p>`;
@@ -310,7 +310,7 @@ export default class AuthService {
                     })
                 );
             }
-            const userData = { password, code, email };
+            const userData = { newPassword, code, email };
             const resetUser: UserType | false = await authRepository.resetUser(userData);
 
             if (!resetUser) {
@@ -352,5 +352,16 @@ export default class AuthService {
             );
         }
 
+    }
+    public async logout(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        res.clearCookie('token');
+        res.removeHeader('Set-Cookie');
+        
+        res.status(200)
+            .json(response({ message: "Logout Successfully" }))
     }
 }

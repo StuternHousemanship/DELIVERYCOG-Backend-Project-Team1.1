@@ -31,12 +31,12 @@ export default class AuthRepository {
         }
         return user;
     }
-    async resetUser(userData: { password: string, email: string }): Promise<UserType | false> {
+    async resetUser(userData: { newPassword: string, email: string }): Promise<UserType | false> {
 
         const user: any = await User.query().where('email', userData.email);
 
         const hashPassword = await new Encryption().bcrypt(
-            userData.password
+            userData.newPassword
         );
 
         const updateUserPassword: any = await User.query().where('email', userData.email).patch({
