@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import crypto, { createHmac } from 'crypto';
+import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { AppError } from '../../Utilities/Errors/appError';
 import { UserType, User } from '../../Models/User';
 import { response } from '../../Utilities/response';
-import bcrypt, { Encryption } from '../../Utilities/bcrypt';
+import bcrypt from '../../Utilities/bcrypt';
 import Email from '../Email/mailer';
 import AuthRepository from '../../Repository/auth/auth.repository';
 import Validations from '../../Utilities/Validations/validation';
@@ -19,8 +19,8 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class AuthService {
     public async registerUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const { firstName, lastName, password, phoneNumber, email } =
-                req.body;
+            const { firstName, lastName, password, phoneNumber, email } = req.body;
+
             const code = crypto.randomInt(100000, 1000000);
             const user = {
                 first_name: firstName,
@@ -30,21 +30,21 @@ export default class AuthService {
                 email,
                 verification_code: code,
             };
-            const userEmail = await validation.validateEmail(user.email);
+
+            const userEmail = await validation.where('email', user.email);
+
             if (userEmail) {
                 return res.status(400).json({
                     success: false,
-                    error:' Email is already taken',
+                    error: ' Email is already taken',
                     message: 'Registration failed!',
                 });
             }
-            const userPhone = await validation.validatePhoneNumber(
-                user.phone_number
-            );
+            const userPhone = await validation.where('phone_number', user.phone_number);
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
-                    error:'Phone number is already taken',
+                    error: 'Phone number is already taken',
                     message: 'Registration failed!',
                 });
             }
@@ -55,7 +55,7 @@ export default class AuthService {
                 if (!registerUser) {
                     return res.status(400).json({
                         success: false,
-                        error:'Unable to create user',
+                        error: 'Unable to create user',
                         message: 'Registration failed',
                     });
                 }
@@ -87,20 +87,16 @@ export default class AuthService {
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
-            const usercheck: any = await User.query().where(
-                'email',
-                '=',
-                email
-            );
-           
-            if(usercheck.length === 0) {
+
+            const usercheck = await validation.where('email', email);
+            if (!usercheck) {
                 return res.status(404).json({
                     success: false,
-                    error:'Incorrect Email or password',
+                    error: 'Incorrect Email or password',
                     message: 'Login failed!',
                 });
             }
-            if (!usercheck[0].is_verified) {
+            if (!usercheck.is_verified) {
                 return res.status(422).json({
                     success: false,
                     message:
@@ -112,15 +108,13 @@ export default class AuthService {
                 const token = await bcrypt.generateAccessToken(user);
                 const newDate = () => {
                     const currentdate = new Date();
-                    const datetime = `Last Sync: ${currentdate.getDate()}/${
-                        currentdate.getMonth() + 1
-                    }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
+                    const datetime = `Last Sync: ${currentdate.getDate()}/${currentdate.getMonth() + 1
+                        }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
                     return datetime;
                 };
                 const message = `
-            <p>Welcome to DYC Platform ${
-                user[0].first_name
-            }, we notice you just login your account at time: ${newDate()}
+            <p>Welcome to DYC Platform ${user[0].first_name
+                    }, we notice you just login your account at time: ${newDate()}
             if you didn't initiate this login, please change your password now.
                 someone may be trying to gain access to your account</p>`;
                 const userInfo = {
@@ -169,33 +163,36 @@ export default class AuthService {
         next: NextFunction
     ) {
         try {
-            const { code } = req.body;
-            const user: any = await User.query().where(
-                'verification_code',
-                '=',
-                code
-            );
-            if (user.length === 0) {
+            const { code, email } = req.body;
+
+            const user: UserType | undefined = await validation.whereAnd('verification_code', code, 'email', email);
+            if (!user) {
+                return res.status(404).json({
+                    message: 'Resource for user not found',
+                    success: false,
+                });
+            }
+            if (!user) {
                 return res.status(401).json({
                     message: 'Invalid code',
                     success: false,
                 });
             }
-            if (user[0].is_verified) {
+
+            if (user.is_verified) {
                 return res.status(409).json({
                     message: 'Email already verified',
                     success: false,
                 });
             }
-            const modifyUser: any = await User.query()
-                .patch({ is_verified: 'true' })
-                .where('verification_code', '=', code);
-            const message = `<p>Welcome to DeliveryCog ${user[0].first_name}
-         your account have been activated.<p>`;
+            const modifyUser: false | UserType[] | User[] = await authRepository.activateAccount({ code, email });
+
+            const message = `<p>Welcome to DeliveryCog ${user.first_name}
+                             your account have been activated.<p>`;
             if (modifyUser) {
                 const userInfo = {
-                    first_name: user[0].first_name,
-                    email: user[0].email,
+                    first_name: user.first_name,
+                    email: user.email,
                     subject: 'Welcome to DeliveryCog',
                     message,
                 };
@@ -214,5 +211,157 @@ export default class AuthService {
                 )
             );
         }
+    }
+    public async forgotPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const { email } = req.body;
+            const code = crypto.randomInt(100000, 1000000);
+            const userEmail = await validation.where('email', email);
+
+            if (!userEmail) {
+                return res.status(404).json({
+                    success: false,
+                    error: `User with email: ${email} not found`,
+                    message: 'Forgot Password failed!',
+                });
+            }
+            const user: false | UserType[] = await authRepository.forgotPassword({ code, email })
+
+            if (!user) {
+                return res.status(500).json({
+                    success: false,
+                    error: `Forgot Password Failed`,
+                    message: `User with ${email} failed`
+                });
+            }
+
+
+            const message = `<p>
+                        ${user[0].first_name}, <br> 
+                        Someone has requested a code to change your password. You can do this through the link below.  <br> 
+                        Code: ${user[0].verification_code}
+                        <br> 
+                        If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one.
+                        <br> 
+                        Thanks,  <br> 
+                        Team DeliveryCog <p/>`;
+            const data = {
+                email,
+                first_name: user[0].first_name,
+                code: user[0].verification_code,
+                subject: 'DeliveryCog Password Reset Sent',
+                message,
+            };
+
+            //TODO refactor email to house message and only take required data(clean up)
+            mail.sendForgotPassword(data);
+
+            return res.status(200).json(
+                response({
+                    success: true,
+                    message: 'Password Reset Sent',
+                })
+            );
+        } catch (error) {
+            return next(
+                new AppError(
+                    `something went wrong here is the error ${error}`,
+                    500
+                )
+            );
+        }
+    }
+
+    public async resetPassword(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const { password, confirm_password, code, email } = req.body;
+            const newPassword = password === confirm_password ? password : res.status(400).json(
+                response({
+                    error: "password doesn't match",
+                    message: 'Ensure password is same with comfirm_password',
+                    success: false,
+                })
+            );
+            const userExist = await validation.where('email', email);
+
+            if (!userExist) {
+                return res.status(404).json({
+                    success: false,
+                    error: `User with email: ${email} not found`,
+                    message: 'Forgot Password failed!',
+                });
+            }
+            const confirmCode = await validation.where('verification_code', code);
+
+            if (!confirmCode) {
+                return res.status(400).json(
+                    response({
+                        error: 'Invalid code',
+                        message: 'Please provide a valide code',
+                        success: false,
+                    })
+                );
+            }
+            const userData = { newPassword, code, email };
+            const resetUser: UserType | false = await authRepository.resetUser(userData);
+
+            if (!resetUser) {
+                return res.status(500).json(
+                    response({
+                        error: 'Error updating password',
+                        message: `Password for user with email ${email} not updated`,
+                        success: false,
+                    })
+                );
+            }
+
+            const message = `<p>
+                    Hi ${resetUser.first_name}, <br> 
+                    You have successfully reset your password.
+                      <br> 
+                    Team DeliveryCog <p/>`;
+
+            const data = {
+                email: email,
+                first_name: resetUser.first_name,
+                subject: 'Password Reset Successfully',
+                message,
+            };
+
+            await mail.sendResetSuccess(data);
+
+            return res.status(200).json(response({
+                success: true,
+                message: 'Password successfully reset'
+            }));
+        }
+        catch (error) {
+            return next(
+                new AppError(
+                    `something went wrong here is the error ${error}`,
+                    500
+                )
+            );
+        }
+
+    }
+    public async logout(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        res.clearCookie('token');
+        res.removeHeader('Set-Cookie');
+        
+        res.status(200)
+            .json(response({ message: "Logout Successfully" }))
     }
 }

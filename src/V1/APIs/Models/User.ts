@@ -1,6 +1,6 @@
 import { Model } from 'objection';
 
-export interface UserType {
+export interface UserType  {
     id?: number;
     first_name: string;
     last_name: string;
