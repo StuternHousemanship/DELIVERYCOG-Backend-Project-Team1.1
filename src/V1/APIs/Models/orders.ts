@@ -1,8 +1,8 @@
 import { Model } from 'objection';
 
 export interface OrderType {
-    //sender_id: number;
-    package_name: string;
+    sender_id?: number;
+    item: string;
     reciever_name: string;
     reciever_number: number;
     destination: string,
