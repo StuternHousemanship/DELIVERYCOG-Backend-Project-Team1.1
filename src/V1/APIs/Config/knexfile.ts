@@ -23,7 +23,7 @@ const config: { [key: string]: Knex.Config } = {
             tableName: 'knex_migrations',
         },
         seeds: {
-            directory: __dirname + '/db/seeds'
+            directory: __dirname +  '/db/seeds'
           },
         ...knexSnakeCaseMappers,
     },
