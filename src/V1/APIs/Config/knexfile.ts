@@ -5,8 +5,6 @@ import type { Knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 
 dotenv.config({ path: '.env' });
-console.log(__dirname + '/db/seeds');
-console.log(process.env.POSTGRES_DB);
 
 const config: { [key: string]: Knex.Config } = {
     development: {

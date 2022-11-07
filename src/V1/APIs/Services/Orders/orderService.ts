@@ -17,8 +17,6 @@ export default class OrderService {
                 reciever_name: req.body.recieverName,
                 reciever_number: req.body.recieverNumber})
         
-
-         await orderRepository.createOrder(orderDetails)
         return res.status(201).json({
             orderDetails,
             success: true,
