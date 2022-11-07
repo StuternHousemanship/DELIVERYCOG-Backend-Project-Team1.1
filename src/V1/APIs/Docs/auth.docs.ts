@@ -3,7 +3,7 @@ const user = [
         data: [
             {
                 _id: '634b302e731b34b7aa5e0cb8',
-                first_name: 'mark tyson',
+                first_name: 'johndoe tyson',
                 last_name: 'omolaja',
                 email: 'by3n7k32hg@paperpapyrus.com',
                 phone_number: '08161228946',
@@ -27,7 +27,7 @@ const user = [
     {
         data: {
             email: 'tyson@kaimdr.com',
-            name: 'mark tyson',
+            name: 'johndoe tyson',
         },
         expiresIn: 1800,
         message: 'Login successful',
@@ -60,6 +60,34 @@ const user = [
         message: 'Invalid code',
         success: false,
     },
+    {
+        success: true,
+        message: "Password Reset Sent"
+    },
+    {
+        email: "please enter a valid email",
+        message: "Action unsuccessful",
+        success: false
+    },
+    {
+        success: false,
+        error: "User with email: johndo@gmail.com not found",
+        message: "Forgot Password failed!"
+    },
+    {
+        "success": true,
+        "message": "Password successfully reset"
+    },
+    {
+        success: false,
+        message: "Ensure password is same with comfirm_password",
+        error: "Password doesn't match"
+    },
+    {
+        "success": false,
+        "message": "Please provide a valide code",
+        "error": "Invalid code"
+    }
 ];
 
 const createUser = {
@@ -200,7 +228,7 @@ const signInUser = {
                         email: {
                             type: 'string',
                             description: 'valid Email of the user',
-                            example: 'mark@gmail.com',
+                            example: 'johndoe@gmail.com',
                         },
                         password: {
                             type: 'string',
@@ -249,6 +277,135 @@ const signInUser = {
         },
     },
 };
+const forgotPassword = {
+    tags: ['Authentication'],
+    description:
+        'Request a password reset link for a user',
+    requestBody: {
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        email: {
+                            type: 'string',
+                            description: 'Valid email of an existing user',
+                            example: 'johndoe@gmail.com',
+                        }
+                    },
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            description: 'Ok',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[10],
+                    },
+                },
+            },
+        },
+        422: {
+            description: 'Unprocessable Entity',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[11],
+                    },
+                },
+            },
+        },
+        404: {
+            description: 'Not Found',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[12],
+                    },
+                },
+            },
+        },
+    },
+};
+const resetPassword = {
+    tags: ['Authentication'],
+    description:
+        'Reset existing user password',
+    requestBody: {
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        email: {
+                            type: 'string',
+                            description: 'Valid email of an existing user',
+                            example: 'johndoe@gmail.com',
+                        },
+                        code: {
+                            type: 'integer',
+                            description: 'randomly generate 6-digit code',
+                            example: '123456',
+                        },
+                        password: {
+                            type: 'string',
+                            description:
+                                'A unique password of the user with a combination of capital letter, small letter, numbers and signs, minimum lenght: 6, max. lenght: 16',
+                            example: 'Gxo@k.123ftz-f',
+                        },
+                        confirm_password: {
+                            type: 'string',
+                            description:
+                                'A unique password of the user with a combination of capital letter, small letter, numbers and signs, minimum lenght: 6, max. lenght: 16',
+                            example: 'Gxo@k.123ftz-f',
+                        },
+                    },
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            description: 'Ok',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[13],
+                    },
+                },
+            },
+        },
+        400: {
+            description: 'Bad Request',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[14],
+                    },
+                },
+            },
+        },
+        404: {
+            description: 'Not Found',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        example: user[15],
+                    },
+                },
+            },
+        }        
+    },
+};
 
 const authRouteDoc = {
     '/api/v1/auth/register': {
@@ -264,6 +421,16 @@ const authRouteDoc = {
     '/api/v1/auth/login': {
         post: {
             ...signInUser,
+        },
+    },
+    '/api/v1/auth/forgot-password': {
+        post: {
+            ...forgotPassword,
+        },
+    },
+    '/api/v1/auth/reset-password': {
+        post: {
+            ...resetPassword,
         },
     },
 };
