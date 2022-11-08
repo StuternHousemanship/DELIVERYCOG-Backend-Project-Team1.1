@@ -6,7 +6,7 @@ import swaggerDocumentation from '../Docs/swagger.config';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/documentation', swaggerDoc.serve);
-router.use('/documentation', swaggerDoc.setup(swaggerDocumentation));
+router.use('/docs', swaggerDoc.serve);
+router.use('/docs', swaggerDoc.setup(swaggerDocumentation));
 
 export default router;
