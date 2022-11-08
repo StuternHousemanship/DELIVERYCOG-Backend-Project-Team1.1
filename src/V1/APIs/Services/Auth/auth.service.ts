@@ -84,6 +84,7 @@ export default class AuthService {
             return next(new AppError(`something went wrong ${error}`, 500));
         }
     }
+
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
@@ -102,7 +103,7 @@ export default class AuthService {
                     message:
                         'User account is not active, Kindly activate account',
                 });
-            }
+             }
             const user = await authRepository.authenticate(email, password);
             if (user) {
                 const token = await bcrypt.generateAccessToken(user);
@@ -172,13 +173,7 @@ export default class AuthService {
                     success: false,
                 });
             }
-            if (!user) {
-                return res.status(401).json({
-                    message: 'Invalid code',
-                    success: false,
-                });
-            }
-
+            
             if (user.is_verified) {
                 return res.status(409).json({
                     message: 'Email already verified',

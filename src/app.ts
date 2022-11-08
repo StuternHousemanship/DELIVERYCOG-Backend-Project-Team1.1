@@ -37,7 +37,6 @@ app.use('/api/v1', routerV1);
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
     next(new AppError(`can't find ${req.originalUrl} on server!`, 404));
 });
-
 app.use(errorHandler);
 
 // Listen for server connections
