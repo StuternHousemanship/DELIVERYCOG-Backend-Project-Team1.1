@@ -5,13 +5,13 @@ const newOrder = new OrderService();
 
 export default class orderController {
    public async createOrder(req: Request, res: Response, next: NextFunction) {
-   return await newOrder.createOrders(req, res, next)
+   return newOrder.createOrders(req, res, next)
 };
    public async fetchAllOrder(req: Request, res: Response, next: NextFunction)  {
-   return await newOrder.getAllOrder (req, res, next);
+   return newOrder.getAllOrder (req, res, next);
 };
    public async fetchOrderById(req: Request, res: Response, next: NextFunction) {
-      return await newOrder.getOrderById(req, res, next);
+      return newOrder.getOrderById(req, res, next);
    };  
 }
 
