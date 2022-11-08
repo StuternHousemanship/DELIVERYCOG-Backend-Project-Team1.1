@@ -173,13 +173,7 @@ export default class AuthService {
                     success: false,
                 });
             }
-            if (!user) {
-                return res.status(401).json({
-                    message: 'Invalid code',
-                    success: false,
-                });
-            }
-
+            
             if (user.is_verified) {
                 return res.status(409).json({
                     message: 'Email already verified',
