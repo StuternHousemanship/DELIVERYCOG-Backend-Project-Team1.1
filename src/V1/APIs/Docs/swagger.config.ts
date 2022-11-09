@@ -1,5 +1,4 @@
 import authRouteDoc from './auth.docs';
-
 const swaggerDocumentation = {
     openapi: '3.0.3',
     info: {

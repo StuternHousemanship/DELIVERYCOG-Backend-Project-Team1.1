@@ -41,7 +41,7 @@ app.use(errorHandler);
 
 // Listen for server connections
 const server = app.listen(PORT, () =>
-    console.log(`server running on ${address}`)
+    console.log(`server running on ${PORT}`)
 );
 
 export default server;

@@ -95,6 +95,7 @@ export default class AuthService {
                     success: false,
                     error: 'Incorrect Email or password',
                     message: 'Login failed!',
+                    //await mail.sendLoginConfirmation(userInfo);
                 });
             }
             if (!usercheck.is_verified) {
@@ -135,7 +136,7 @@ export default class AuthService {
                 res.cookie('token', token, {
                     expires: new Date(Date.now() + 1800),
                 });
-                await mail.sendLoginConfirmation(userInfo);
+                //await mail.sendLoginConfirmation(userInfo);
                 res.status(200).json(
                     response({ message: 'Login Successful', data: profile })
                 );

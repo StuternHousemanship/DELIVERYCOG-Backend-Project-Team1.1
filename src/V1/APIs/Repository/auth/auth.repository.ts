@@ -1,7 +1,7 @@
 import { Encryption } from '../../Utilities/bcrypt';
 import { User, UserType } from '../../Models/User';
 import crypto from 'crypto';
-
+ 
 const RandomeCode = crypto.randomInt(100000, 1000000);
 export default class AuthRepository {
     async createUser(user: UserType): Promise<UserType> {
@@ -26,6 +26,7 @@ export default class AuthRepository {
             user[0].password_digest
         );
 
+        
         if (!checkPassword) {
             return undefined;
         }
