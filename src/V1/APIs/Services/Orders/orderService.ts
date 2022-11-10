@@ -13,7 +13,6 @@ export default class OrderService {
 
         try {
              const orderDetails = await orderRepository.createOrder({
-                //sender_id: req.user.id,
                 item : req.body.item,
                 destination: req.body.destination,
                 reciever_name: req.body.recieverName,

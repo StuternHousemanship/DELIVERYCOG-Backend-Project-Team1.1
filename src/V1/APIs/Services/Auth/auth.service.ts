@@ -279,7 +279,7 @@ export default class AuthService {
     ) {
         try {
             const { password, confirm_password, code, email } = req.body;
-            const newPassword = password === confirm_password ? password : res.status(400).json(
+            const newPassword = password === confirm_password ? password : res.status(404).json(
                 response({
                     error: "password doesn't match",
                     message: 'Ensure password is same with comfirm_password',

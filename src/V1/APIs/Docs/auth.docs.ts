@@ -27,7 +27,7 @@ const user = [
     {
         data: {
             email: 'tyson@kaimdr.com',
-            name: 'johndoe tyson',
+            name: 'mark tyson',
         },
         expiresIn: 1800,
         message: 'Login successful',
