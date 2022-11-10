@@ -10,9 +10,10 @@ export default class OrderService {
     // Here is the logics for creating new order
     public async createOrders(req: Request, res: Response, next: NextFunction)  {
         // console.log(req.token);
+
         try {
              const orderDetails = await orderRepository.createOrder({
-                sender_id: req.body.user_id,
+                //sender_id: req.user.id,
                 item : req.body.item,
                 destination: req.body.destination,
                 reciever_name: req.body.recieverName,

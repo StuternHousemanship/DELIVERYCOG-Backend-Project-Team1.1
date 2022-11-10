@@ -298,7 +298,7 @@ export default class AuthService {
             const confirmCode = await validation.where('verification_code', code);
 
             if (!confirmCode) {
-                return res.status(400).json(
+                return res.status(404).json(
                     response({
                         error: 'Invalid code',
                         message: 'Please provide a valide code',

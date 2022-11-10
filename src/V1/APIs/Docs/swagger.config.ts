@@ -2,9 +2,9 @@ import authRouteDoc from './auth.docs';
 const swaggerDocumentation = {
     openapi: '3.0.3',
     info: {
-        title: 'Swagger DYC - OpenAPI 3.0',
-        version: '0.0.1',
-        description: 'DYC Documentations',
+        title: 'DeliveryCog Documentation',
+        version: '0.0.2',
+        description: 'Documentations for DeliveryCog APIs',
     },
     servers: [
         {
