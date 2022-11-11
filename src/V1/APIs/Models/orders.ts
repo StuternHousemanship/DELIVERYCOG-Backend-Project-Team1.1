@@ -9,6 +9,7 @@ export interface OrderType {
     created_at?: string;
 }
 
+
 export class Orders extends Model {
     static get tableName() {
         return 'orders';

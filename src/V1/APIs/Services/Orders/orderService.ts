@@ -1,23 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-import { Orders, OrderType } from '../../Models/orders';
+import { User, Orders, OrderType, UserType } from '../../Models/User';
+// import { Orders, OrderType } from '../../Models/orders';
 import OrderRepository from '../../Repository/Order/orderRepository';
 const orderRepository = new OrderRepository();
 
 dotenv.config({ path: './src/V1/APIs/Config/.env' });
 
 export default class OrderService { 
-    // Here is the logics for creating new order
+    // Here is the logics for logged in user to creating new order
     public async createOrders(req: Request, res: Response, next: NextFunction)  {
-        // console.log(req.token);
-
+        //  console.log('ping');
         try {
              const orderDetails = await orderRepository.createOrder({
                 item : req.body.item,
                 destination: req.body.destination,
                 reciever_name: req.body.recieverName,
                 reciever_number: req.body.recieverNumber})
-        
         return res.status(201).json({
             orderDetails,
             success: true,
@@ -28,12 +27,13 @@ export default class OrderService {
         catch (error) {
              return res.status(400).json({
                  success: false,
-                 message: 'Oops! Unable to create order, please try again'
+                 message: 'Something went wrong! Unable to create order'
              })
         }};
 // Here is the logic for fetching all orders from database 
     public async getAllOrder(req: Request, res: Response, next: NextFunction) {
         try{ 
+            
             const getAllOrders: any = await Orders.query().then(rows => rows) 
         return getAllOrders;
     }
