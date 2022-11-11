@@ -95,6 +95,7 @@ export default class AuthService {
                     success: false,
                     error: 'Incorrect Email or password',
                     message: 'Login failed!',
+                    //await mail.sendLoginConfirmation(userInfo);
                 });
             }
             if (!usercheck.is_verified) {
@@ -135,7 +136,7 @@ export default class AuthService {
                 res.cookie('token', token, {
                     expires: new Date(Date.now() + 1800),
                 });
-                await mail.sendLoginConfirmation(userInfo);
+                //await mail.sendLoginConfirmation(userInfo);
                 res.status(200).json(
                     response({ message: 'Login Successful', data: profile })
                 );
@@ -278,7 +279,7 @@ export default class AuthService {
     ) {
         try {
             const { password, confirm_password, code, email } = req.body;
-            const newPassword = password === confirm_password ? password : res.status(400).json(
+            const newPassword = password === confirm_password ? password : res.status(404).json(
                 response({
                     error: "password doesn't match",
                     message: 'Ensure password is same with comfirm_password',

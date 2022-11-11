@@ -12,7 +12,7 @@ const config: { [key: string]: Knex.Config } = {
         connection: {
             database: `${process.env.POSTGRES_DB}`,
             user: `${process.env.POSTGRES_USER}`,
-            password: `${process.env.POSTGRES_PASSWORD}`,            
+            password: `${process.env.POSTGRES_PASSWORD}`     
         },
         
         pool: {

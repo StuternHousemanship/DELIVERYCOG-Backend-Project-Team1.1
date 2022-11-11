@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import OrderService from '../../Services/Orders/orderService';
-import { Orders, OrderType } from '../../Models/orders';
 const newOrder = new OrderService();
 
 export default class orderController {
@@ -14,5 +13,6 @@ export default class orderController {
       return newOrder.getOrderById(req, res, next);
    };  
 }
+
 
 

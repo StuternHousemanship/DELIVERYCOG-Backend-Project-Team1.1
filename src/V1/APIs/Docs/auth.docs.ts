@@ -3,7 +3,7 @@ const user = [
         data: [
             {
                 _id: '634b302e731b34b7aa5e0cb8',
-                first_name: 'johndoe tyson',
+                first_name: 'mark tyson',
                 last_name: 'omolaja',
                 email: 'by3n7k32hg@paperpapyrus.com',
                 phone_number: '08161228946',
@@ -27,7 +27,7 @@ const user = [
     {
         data: {
             email: 'tyson@kaimdr.com',
-            name: 'johndoe tyson',
+            name: 'mark tyson',
         },
         expiresIn: 1800,
         message: 'Login successful',
