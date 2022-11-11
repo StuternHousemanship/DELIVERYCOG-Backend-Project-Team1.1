@@ -7,23 +7,23 @@ const order = Router();
 
 const orders = new orderController();
 
-// Defining swagger schema documentation for orders
-// /**
-// * @swagger
-// *  components:
-// *     schema:
-// *        task:
-// *            type: object
-// *            properties:
-// *                 item:
-// *                     type: string
-// *                 destination:
-// *                     type: string
-// *                 recieverName:
-// *                     type: string
-// *                 recieverNumber:
-// *                     type: integer
-// */
+//Defining swagger schema documentation for orders
+/**
+* @swagger
+*  components:
+*     schema:
+*        task:
+*            type: object
+*            properties:
+*                 item:
+*                     type: string
+*                 destination:
+*                     type: string
+*                 recieverName:
+*                     type: string
+*                 recieverNumber:
+*                     type: integer
+*/
 
 // swagger doucumentation of task post api route
 /**

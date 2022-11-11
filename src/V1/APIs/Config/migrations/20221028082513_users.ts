@@ -16,7 +16,6 @@ export async function up(knex: Knex): Promise<void> {
     })
     .createTable('orders', (table) => {
         table.increments('id').primary;
-        // table.integer('sender_id').notNullable().references('id').inTable('users');
         table.string('item', 50).notNullable();
         table.string('destination', 100).notNullable();
         table.string('reciever_name', 100).notNullable();

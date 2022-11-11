@@ -44,3 +44,5 @@ export const logout = async (
 ) => {
     return await authStore.logout(req, res, next);
 };
+
+

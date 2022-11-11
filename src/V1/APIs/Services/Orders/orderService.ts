@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import { User, Orders, OrderType, UserType } from '../../Models/User';
-// import { Orders, OrderType } from '../../Models/orders';
 import OrderRepository from '../../Repository/Order/orderRepository';
 const orderRepository = new OrderRepository();
 
@@ -10,7 +9,6 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class OrderService { 
     // Here is the logics for logged in user to creating new order
     public async createOrders(req: Request, res: Response, next: NextFunction)  {
-        //  console.log('ping');
         try {
              const orderDetails = await orderRepository.createOrder({
                 item : req.body.item,
@@ -40,7 +38,7 @@ export default class OrderService {
 catch (error) {
     return res.status(400).json({
         success: false,
-        message: 'Oops! Something happened, please try again'
+        message: 'Oops! Something went wrong!, please try again'
     })
 }  
      };
@@ -54,7 +52,7 @@ catch (error) {
     catch (error) {
         return res.status(400).json({
             success: false,
-            message: `Oops! Order id ${req.params.id} does not exist` 
+            message: `Sorry! Order id ${req.params.id} does not exist` 
         })
     }
 };}; 
