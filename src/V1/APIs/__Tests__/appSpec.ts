@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import server from '../../../app';
+import server from '../../../deliverycog';
 
 describe('Test server connection', () => {
     const request = supertest(server);

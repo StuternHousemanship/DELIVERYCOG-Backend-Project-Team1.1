@@ -40,7 +40,9 @@ export default class AuthService {
                     message: 'Registration failed!',
                 });
             }
+
             const userPhone = await validation.where('phone_number', user.phone_number);
+            
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
@@ -238,7 +240,6 @@ export default class AuthService {
                     message: `User with ${email} failed`
                 });
             }
-
 
             const message = `<p>
                         ${user[0].first_name}, <br> 
