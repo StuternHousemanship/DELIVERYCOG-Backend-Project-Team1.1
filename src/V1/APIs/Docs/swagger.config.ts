@@ -1,4 +1,5 @@
 import authRouteDoc from './auth.docs';
+import orderRouteDoc from './order.docs';
 const swaggerDocumentation = {
     openapi: '3.0.3',
     info: {
@@ -21,9 +22,14 @@ const swaggerDocumentation = {
             name: 'Authentication',
             description: 'Authentication Routes',
         },
+        {
+            name: 'Order',
+            description: 'Order Routes (Authenticated)',
+        },
     ],
     paths: {
-        ...authRouteDoc
+        ...authRouteDoc,
+        ...orderRouteDoc
     },
 };
 export default swaggerDocumentation;
