@@ -6,7 +6,7 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
     if (errors.isEmpty()) {
         return next();
     }
-
+    
     const resultErrors = [];
     errors.array().map((err) => resultErrors.push({ [err.param]: err.msg }));
 

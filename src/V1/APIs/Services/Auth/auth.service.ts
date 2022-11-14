@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { AppError } from '../../Utilities/Errors/appError';
-import { UserType, User } from '../../Models/User';
+import { UserType, User } from '../../Models/user.model.ts';
 import { response } from '../../Utilities/response';
 import bcrypt from '../../Utilities/bcrypt';
 import Email from '../Email/mailer';

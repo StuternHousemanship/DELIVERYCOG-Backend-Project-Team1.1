@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { UserType } from '../../Models/User';
+import { UserType } from '../../Models/user.model.ts';
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema
@@ -13,15 +13,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer('verification_code', 10);
         table.boolean('is_verified').notNullable().defaultTo('false');
         table.timestamps(true, true);
-    })
-    .createTable('orders', (table) => {
-        table.increments('id').primary;
-        table.string('item', 50).notNullable();
-        table.string('destination', 100).notNullable();
-        table.string('reciever_name', 100).notNullable();
-        table.bigInteger('reciever_number').notNullable();
-        table.timestamps(true, true);
-    });
+    }) 
 }
 
 export async function down(knex: Knex): Promise<void> {

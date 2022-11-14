@@ -7,7 +7,7 @@ import swaggerDocumentation from '../Docs/swagger.config';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/orders', orderRouter);
+router.use('/order', orderRouter);
 router.use('/documentation', swaggerDoc.serve);
 router.use('/documentation', swaggerDoc.setup(swaggerDocumentation));
 

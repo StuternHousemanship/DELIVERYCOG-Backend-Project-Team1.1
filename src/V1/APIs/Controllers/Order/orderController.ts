@@ -4,14 +4,16 @@ const newOrder = new OrderService();
 
 export default class orderController {
    public async createOrder(req: Request, res: Response, next: NextFunction) {
-   return newOrder.createOrders(req, res, next)
-};
-   public async fetchAllOrder(req: Request, res: Response, next: NextFunction)  {
-   return newOrder.getAllOrder (req, res, next);
-};
+      return newOrder.createOrders(req, res, next)
+   };
+
+   public async fetchAllOrder(req: Request, res: Response, next: NextFunction) {
+      return newOrder.getAllOrder(req, res, next);
+   };
+   
    public async fetchOrderById(req: Request, res: Response, next: NextFunction) {
       return newOrder.getOrderById(req, res, next);
-   };  
+   };
 }
 
 

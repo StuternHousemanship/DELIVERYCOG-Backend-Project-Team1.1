@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import orderController  from "../../Controllers/Order/orderController";
 import { validate } from '../../Middlewares/validateRequest.middleware';
+import { createOrderValidationRules } from '../../Utilities/Validations/order.validation';
 
+import { verifyToken } from '../../Middlewares/verifyToken.middleware';
 
 const order = Router();
 
@@ -35,7 +37,7 @@ const orders = new orderController();
  *      '200':
  *        description: Delivery order created successfully          
  */
-order.post('/create-order', validate,  orders.createOrder);
+order.post('/', verifyToken, createOrderValidationRules(), validate,  orders.createOrder);
 
 /**
   * @swagger

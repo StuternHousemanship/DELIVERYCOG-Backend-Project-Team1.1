@@ -1,6 +1,6 @@
 import { Model } from 'objection';
 
-export interface UserType  {
+export interface UserType {
     id?: number;
     first_name: string;
     last_name: string;
@@ -12,24 +12,10 @@ export interface UserType  {
     created_at?: string;
 }
 
-export interface OrderType {
-    // sender_id?: number;
-    item: string;
-    reciever_name: string;
-    reciever_number: number;
-    destination: string,
-    created_at?: string;
-}
 
 export class User extends Model {
     static get tableName() {
         return 'users';
-    }
-}
-
-export class Orders extends Model {
-    static get tableName() {
-        return 'orders';
     }
 }
 

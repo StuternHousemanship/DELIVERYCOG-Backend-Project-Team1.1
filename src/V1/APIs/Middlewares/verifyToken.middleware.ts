@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../Utilities/Errors/appError';
-import { User } from '../Models/User';
+import { User, UserType } from '../Models/user.model.ts';
 
 export interface jwtToken {
     user_id: number;
     iat: number;
     exp: number;
 }
+
 
 export const verifyToken = async (
     req: Request,
