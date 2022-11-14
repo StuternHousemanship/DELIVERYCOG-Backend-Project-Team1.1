@@ -13,5 +13,15 @@ export default class OrderRepository {
             });
         return newOrder as OrderType;
     }
+    async getAllOrder(userId: string | number): Promise<OrderType[]> {
+        const orders: OrderType[] = (await Orders.query().where('userId', userId).then(rows => rows)) as OrderType[];
+
+        return orders ;
+    }
+    async getOrderById(orderId: string | number, userId: string | number): Promise<OrderType[]> {
+        const orders: OrderType[] = (await Orders.query().where('id', orderId).andWhere('userId', userId).then(rows => rows)) as OrderType[];
+
+        return orders;
+    }
 
 }

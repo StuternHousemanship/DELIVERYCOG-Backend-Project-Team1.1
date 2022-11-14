@@ -48,13 +48,13 @@ export const verifyToken = async (
         );
         if (!currentUser) {
             return res.status(401).json({
-                message: 'the user belongs to the token nolonger exist.',
+                message: 'the user belongs to the token no longer exist.',
                 success: false,
             });
         }
-        req.user = currentUser;
+        req.user = currentUser as UserType;
         next();
-    } catch (error) {
+    } catch (error) { 
         return next(
             new AppError(`something went wrong here is the error ${error}`, 500)
         );

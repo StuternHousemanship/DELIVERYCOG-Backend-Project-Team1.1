@@ -40,7 +40,9 @@ export default class AuthService {
                     message: 'Registration failed!',
                 });
             }
+
             const userPhone = await validation.where('phone_number', user.phone_number);
+            
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
@@ -84,7 +86,6 @@ export default class AuthService {
             return next(new AppError(`something went wrong ${error}`, 500));
         }
     }
-
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
@@ -95,7 +96,6 @@ export default class AuthService {
                     success: false,
                     error: 'Incorrect Email or password',
                     message: 'Login failed!',
-                    //await mail.sendLoginConfirmation(userInfo);
                 });
             }
             if (!usercheck.is_verified) {
@@ -104,7 +104,7 @@ export default class AuthService {
                     message:
                         'User account is not active, Kindly activate account',
                 });
-             }
+            }
             const user = await authRepository.authenticate(email, password);
             if (user) {
                 const token = await bcrypt.generateAccessToken(user);
@@ -136,7 +136,7 @@ export default class AuthService {
                 res.cookie('token', token, {
                     expires: new Date(Date.now() + 1800),
                 });
-                //await mail.sendLoginConfirmation(userInfo);
+                await mail.sendLoginConfirmation(userInfo);
                 res.status(200).json(
                     response({ message: 'Login Successful', data: profile })
                 );
@@ -174,7 +174,13 @@ export default class AuthService {
                     success: false,
                 });
             }
-            
+            if (!user) {
+                return res.status(401).json({
+                    message: 'Invalid code',
+                    success: false,
+                });
+            }
+
             if (user.is_verified) {
                 return res.status(409).json({
                     message: 'Email already verified',
@@ -235,7 +241,6 @@ export default class AuthService {
                 });
             }
 
-
             const message = `<p>
                         ${user[0].first_name}, <br> 
                         Someone has requested a code to change your password. You can do this through the link below.  <br> 
@@ -279,7 +284,7 @@ export default class AuthService {
     ) {
         try {
             const { password, confirm_password, code, email } = req.body;
-            const newPassword = password === confirm_password ? password : res.status(404).json(
+            const newPassword = password === confirm_password ? password : res.status(400).json(
                 response({
                     error: "password doesn't match",
                     message: 'Ensure password is same with comfirm_password',

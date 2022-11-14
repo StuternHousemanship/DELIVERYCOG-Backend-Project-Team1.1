@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import orderController  from "../../Controllers/Order/orderController";
+import orderController from "../../Controllers/Order/orderController";
 import { validate } from '../../Middlewares/validateRequest.middleware';
 import { createOrderValidationRules } from '../../Utilities/Validations/order.validation';
 
@@ -37,7 +37,7 @@ const orders = new orderController();
  *      '200':
  *        description: Delivery order created successfully          
  */
-order.post('/', verifyToken, createOrderValidationRules(), validate,  orders.createOrder);
+order.post('/', verifyToken, createOrderValidationRules(), validate, orders.createOrder);
 
 /**
   * @swagger
@@ -49,7 +49,7 @@ order.post('/', verifyToken, createOrderValidationRules(), validate,  orders.cre
   *         200:
   *             description: order details          
   */
-order.get('/getAllOrder', validate,   orders.fetchAllOrder);
+order.get('/all', verifyToken, orders.getAllOrder);
 
 /**
   * @swagger
@@ -61,6 +61,6 @@ order.get('/getAllOrder', validate,   orders.fetchAllOrder);
   *         200:
   *             description: order details          
   */
-order.get('/:id', validate,  orders.fetchOrderById);
+order.get('/:orderId', verifyToken, orders.getOrderById);
 
 export default order;
