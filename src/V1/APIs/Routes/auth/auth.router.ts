@@ -10,8 +10,7 @@ import {
     otpValidationRules,
     registerValidationRules,
     loginValidationRules,emailValidationRules,restPasswordValidationRules
-} from '../../Utilities/Validations/reqValidation';
-import { verifyToken } from '../../Middlewares/verifyToken.middleware';
+} from '../../Utilities/Validations/auth.validation';
 
 const auth = Router();
 

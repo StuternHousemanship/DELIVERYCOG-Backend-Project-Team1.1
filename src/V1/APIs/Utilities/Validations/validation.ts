@@ -1,4 +1,4 @@
-import { User, UserType } from '../../Models/User';
+import { User, UserType } from '../../Models/user.model.ts';
 
 export default class Validation {
     where = async (column: string, value: string): Promise<UserType | undefined> => {

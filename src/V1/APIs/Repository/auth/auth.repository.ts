@@ -1,5 +1,5 @@
 import { Encryption } from '../../Utilities/bcrypt';
-import { User, UserType } from '../../Models/User';
+import { User, UserType } from '../../Models/user.model.ts';
 import crypto from 'crypto';
  
 const RandomeCode = crypto.randomInt(100000, 1000000);

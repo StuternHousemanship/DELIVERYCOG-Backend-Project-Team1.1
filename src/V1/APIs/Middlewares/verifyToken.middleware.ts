@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../Utilities/Errors/appError';
-import { User } from '../Models/User';
+import { User, UserType } from '../Models/user.model.ts';
 
 export interface jwtToken {
     user_id: number;
     iat: number;
     exp: number;
 }
+
 
 export const verifyToken = async (
     req: Request,
@@ -47,13 +48,13 @@ export const verifyToken = async (
         );
         if (!currentUser) {
             return res.status(401).json({
-                message: 'the user belongs to the token nolonger exist.',
+                message: 'the user belongs to the token no longer exist.',
                 success: false,
             });
         }
-        req.user = currentUser;
+        req.user = currentUser as UserType;
         next();
-    } catch (error) {
+    } catch (error) { 
         return next(
             new AppError(`something went wrong here is the error ${error}`, 500)
         );

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import { UserType } from '../Models/User';
+import { UserType } from '../Models/user.model.ts';
 
 export class Encryption {
     private pepper = String(process.env.BCRYPT_PASSWORD);

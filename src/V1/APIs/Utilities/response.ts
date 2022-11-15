@@ -15,7 +15,7 @@ export const response = ({ success, message, error, data }: ClientResponse) => {
     return {
         success: success == null ? true : success,
         message: formatMessage(message),
-        error: formatMessage(error) || undefined,
+        error: formatMessage(error) ,
         count: typeof data === 'object' ? data.length : undefined,
         data: data || undefined,
     };
