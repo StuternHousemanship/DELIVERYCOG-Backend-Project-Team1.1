@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
-import { OrderType } from '../../Models/order.model';
+import { DeliveryType } from '../../Models/delivery.model';
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema
-        .createTable('orders', (table) => {
+        .createTable('deliveries', (table) => {
             table.increments('id').primary();
             table.string('reciever_number', 50).notNullable();
             table.string('item', 50).notNullable();
@@ -19,5 +19,5 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     return knex.schema
-        .dropTableIfExists('orders');
+        .dropTableIfExists('deliveries');
 }

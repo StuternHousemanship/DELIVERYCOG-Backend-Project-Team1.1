@@ -1,4 +1,4 @@
-const order = [
+const delivery = [
     {
         data: [
             {
@@ -14,7 +14,7 @@ const order = [
     {
         success: true,
         message: "Delivery order created succesfully!",
-        order: {
+        delivery: {
             userId: 1,
             item: "goods",
             destination: "No 3 here road",
@@ -122,7 +122,7 @@ const createOrder = {
                 'application/json': {
                     schema: {
                         type: 'object',
-                        example: order[0],
+                        example: delivery[0],
                     },
                 },
             },
@@ -134,7 +134,7 @@ const createOrder = {
                 'application/json': {
                     schema: {
                         type: 'object',
-                        example: order[1],
+                        example: delivery[1],
                     },
                 },
             },
@@ -151,7 +151,7 @@ const getAllOrder = {
                 'application/json': {
                     schema: {
                         type: 'object',
-                        example: order[2],
+                        example: delivery[2],
                     },
                 },
             },
@@ -163,24 +163,24 @@ const getAllOrder = {
                 'application/json': {
                     schema: {
                         type: 'object',
-                        example: order[3],
+                        example: delivery[3],
                     },
                 },
             },
         },
     },
 }
-const orderRouteDoc = {
-    '/api/v1/order/': {
+const deliveryRouteDoc = {
+    '/api/v1/delivery/': {
         post: {
             ...createOrder
         },
     },
-    '/api/v1/order/all': {
+    '/api/v1/delivery/all': {
         post: { 
             ...getAllOrder
         },
     },
 };
 
-export default orderRouteDoc;
+export default deliveryRouteDoc;
