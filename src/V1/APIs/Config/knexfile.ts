@@ -5,7 +5,7 @@ import type { Knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 import path from 'path';
 
-dotenv.config({ path: '.env' });
+dotenv.config({ path: './../../../../.env' });
 
 const config: { [key: string]: Knex.Config } = {
     development: {

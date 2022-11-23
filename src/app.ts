@@ -9,7 +9,8 @@ import { AppError } from './V1/APIs/Utilities/Errors/appError';
 import errorHandler from './V1/APIs/Utilities/Errors/errorHandler';
 import setupDb from './V1/APIs/Config/db/dbSetup';
 
-dotenv.config({ path: './src/V1/APIs/Config/.env' });
+ dotenv.config({ path: './src/V1/APIs/Config/.env' });
+// dotenv.config({ path: '../../../../../.env' });
 
 // Initialize express
 const app: Application = express();

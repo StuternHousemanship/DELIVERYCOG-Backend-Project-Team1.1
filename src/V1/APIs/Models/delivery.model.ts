@@ -1,6 +1,6 @@
 import { Model } from 'objection';
 
-export interface OrderType {
+export interface DeliveryType {
     userId?: string | number;
     item: string;
     reciever_name: string;
@@ -11,8 +11,8 @@ export interface OrderType {
     created_at?: string;
 }
 
-export class Orders extends Model {
+export class Delivery extends Model {
     static get tableName() {
-        return 'orders';
+        return 'deliveries';
     }
 }
