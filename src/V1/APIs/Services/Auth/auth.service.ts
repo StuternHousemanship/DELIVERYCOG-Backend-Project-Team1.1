@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { AppError } from '../../Utilities/Errors/appError';
-import { UserType, User } from '../../Models/user.model.ts';
+import { UserType, User } from '../../Models/user.model';
 import { response } from '../../Utilities/response';
 import bcrypt from '../../Utilities/bcrypt';
 import Email from '../Email/mailer';
@@ -19,7 +19,7 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class AuthService {
     public async registerUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const { firstName, lastName, password, phoneNumber, email } = req.body;
+            const { firstName, lastName, password, userType, phoneNumber, email } = req.body;
 
             const code = crypto.randomInt(100000, 1000000);
             const user = {
@@ -29,6 +29,7 @@ export default class AuthService {
                 phone_number: phoneNumber,
                 email,
                 verification_code: code,
+                user_type:userType
             };
 
             const userEmail = await validation.where('email', user.email);

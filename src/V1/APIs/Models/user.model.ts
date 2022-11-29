@@ -10,6 +10,9 @@ export interface UserType {
     verification_code?: number;
     is_verified?: boolean;
     created_at?: string;
+    user_type: string;
+    is_active?: boolean;
+    long_lat?: number;
 }
 
 
@@ -18,4 +21,3 @@ export class User extends Model {
         return 'users';
     }
 }
-

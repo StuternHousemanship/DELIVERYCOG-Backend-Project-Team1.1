@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { UserType } from '../../Models/user.model.ts';
+import { UserType } from '../../Models/user.model';
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../Utilities/Errors/appError';
-import { User, UserType } from '../Models/user.model.ts';
+import { User, UserType } from '../Models/user.model';
 
 export interface jwtToken {
     user_id: number;
