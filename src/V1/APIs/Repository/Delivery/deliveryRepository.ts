@@ -23,5 +23,4 @@ export default class DeliveryRepository {
         const delivery: DeliveryType[] = (await Delivery.query().where('id', orderId).andWhere('userId', userId).then(rows => rows)) as DeliveryType[];
         return delivery;
     }
-
 }
