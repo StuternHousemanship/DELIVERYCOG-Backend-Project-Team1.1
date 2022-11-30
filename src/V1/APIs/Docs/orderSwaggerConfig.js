@@ -4,14 +4,14 @@ const swaggerOptions = {
             title: 'Delivery Order Manager API',
             description: 'For Delivery Management',
             contact: {
-                name: 'DYC'
+                name: 'DYC',
             },
-            servers: ['http://localhost:3000']
-        }
+            servers: ['http://localhost:3000'],
+        },
     },
-    apis: ["../Routes/delivery/deliveryRoute/*.ts"]
+    apis: ['../Routes/delivery/deliveryRoute/*.ts'],
 };
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-export default swaggerOptions
+export default swaggerOptions;

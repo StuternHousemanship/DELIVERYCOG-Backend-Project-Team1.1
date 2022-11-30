@@ -19,7 +19,8 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class AuthService {
     public async registerUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const { firstName, lastName, password, userType, phoneNumber, email } = req.body;
+            const { firstName, lastName, password, phoneNumber, email } =
+                req.body;
 
             const code = crypto.randomInt(100000, 1000000);
             const user = {
@@ -42,8 +43,11 @@ export default class AuthService {
                 });
             }
 
-            const userPhone = await validation.where('phone_number', user.phone_number);
-            
+            const userPhone = await validation.where(
+                'phone_number',
+                user.phone_number
+            );
+
             if (userPhone) {
                 return res.status(400).json({
                     success: false,
@@ -111,13 +115,15 @@ export default class AuthService {
                 const token = await bcrypt.generateAccessToken(user);
                 const newDate = () => {
                     const currentdate = new Date();
-                    const datetime = `Last Sync: ${currentdate.getDate()}/${currentdate.getMonth() + 1
-                        }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
+                    const datetime = `Last Sync: ${currentdate.getDate()}/${
+                        currentdate.getMonth() + 1
+                    }/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`;
                     return datetime;
                 };
                 const message = `
-            <p>Welcome to DYC Platform ${user[0].first_name
-                    }, we notice you just login your account at time: ${newDate()}
+            <p>Welcome to DYC Platform ${
+                user[0].first_name
+            }, we notice you just login your account at time: ${newDate()}
             if you didn't initiate this login, please change your password now.
                 someone may be trying to gain access to your account</p>`;
                 const userInfo = {
@@ -168,7 +174,12 @@ export default class AuthService {
         try {
             const { code, email } = req.body;
 
-            const user: UserType | undefined = await validation.whereAnd('verification_code', code, 'email', email);
+            const user: UserType | undefined = await validation.whereAnd(
+                'verification_code',
+                code,
+                'email',
+                email
+            );
             if (!user) {
                 return res.status(404).json({
                     message: 'Resource for user not found',
@@ -188,7 +199,8 @@ export default class AuthService {
                     success: false,
                 });
             }
-            const modifyUser: false | UserType[] | User[] = await authRepository.activateAccount({ code, email });
+            const modifyUser: false | UserType[] | User[] =
+                await authRepository.activateAccount({ code, email });
 
             const message = `<p>Welcome to DeliveryCog ${user.first_name}
                              your account have been activated.<p>`;
@@ -232,13 +244,14 @@ export default class AuthService {
                     message: 'Forgot Password failed!',
                 });
             }
-            const user: false | UserType[] = await authRepository.forgotPassword({ code, email })
+            const user: false | UserType[] =
+                await authRepository.forgotPassword({ code, email });
 
             if (!user) {
                 return res.status(500).json({
                     success: false,
                     error: `Forgot Password Failed`,
-                    message: `User with ${email} failed`
+                    message: `User with ${email} failed`,
                 });
             }
 
@@ -285,13 +298,17 @@ export default class AuthService {
     ) {
         try {
             const { password, confirm_password, code, email } = req.body;
-            const newPassword = password === confirm_password ? password : res.status(400).json(
-                response({
-                    error: "password doesn't match",
-                    message: 'Ensure password is same with comfirm_password',
-                    success: false,
-                })
-            );
+            const newPassword =
+                password === confirm_password
+                    ? password
+                    : res.status(400).json(
+                          response({
+                              error: "password doesn't match",
+                              message:
+                                  'Ensure password is same with comfirm_password',
+                              success: false,
+                          })
+                      );
             const userExist = await validation.where('email', email);
 
             if (!userExist) {
@@ -301,7 +318,10 @@ export default class AuthService {
                     message: 'Forgot Password failed!',
                 });
             }
-            const confirmCode = await validation.where('verification_code', code);
+            const confirmCode = await validation.where(
+                'verification_code',
+                code
+            );
 
             if (!confirmCode) {
                 return res.status(404).json(
@@ -313,7 +333,9 @@ export default class AuthService {
                 );
             }
             const userData = { newPassword, code, email };
-            const resetUser: UserType | false = await authRepository.resetUser(userData);
+            const resetUser: UserType | false = await authRepository.resetUser(
+                userData
+            );
 
             if (!resetUser) {
                 return res.status(500).json(
@@ -340,12 +362,13 @@ export default class AuthService {
 
             await mail.sendResetSuccess(data);
 
-            return res.status(200).json(response({
-                success: true,
-                message: 'Password successfully reset'
-            }));
-        }
-        catch (error) {
+            return res.status(200).json(
+                response({
+                    success: true,
+                    message: 'Password successfully reset',
+                })
+            );
+        } catch (error) {
             return next(
                 new AppError(
                     `something went wrong here is the error ${error}`,
@@ -353,17 +376,11 @@ export default class AuthService {
                 )
             );
         }
-
     }
-    public async logout(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
+    public async logout(req: Request, res: Response, next: NextFunction) {
         res.clearCookie('token');
         res.removeHeader('Set-Cookie');
-        
-        res.status(200)
-            .json(response({ message: "Logout Successfully" }))
+
+        res.status(200).json(response({ message: 'Logout Successfully' }));
     }
 }

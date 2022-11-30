@@ -62,32 +62,32 @@ const user = [
     },
     {
         success: true,
-        message: "Password Reset Sent"
+        message: 'Password Reset Sent',
     },
     {
-        email: "please enter a valid email",
-        message: "Action unsuccessful",
-        success: false
+        email: 'please enter a valid email',
+        message: 'Action unsuccessful',
+        success: false,
     },
     {
         success: false,
-        error: "User with email: johndo@gmail.com not found",
-        message: "Forgot Password failed!"
+        error: 'User with email: johndo@gmail.com not found',
+        message: 'Forgot Password failed!',
     },
     {
-        "success": true,
-        "message": "Password successfully reset"
+        success: true,
+        message: 'Password successfully reset',
     },
     {
         success: false,
-        message: "Ensure password is same with comfirm_password",
-        error: "Password doesn't match"
+        message: 'Ensure password is same with comfirm_password',
+        error: "Password doesn't match",
     },
     {
-        "success": false,
-        "message": "Please provide a valide code",
-        "error": "Invalid code"
-    }
+        success: false,
+        message: 'Please provide a valide code',
+        error: 'Invalid code',
+    },
 ];
 
 const createUser = {
@@ -279,8 +279,7 @@ const signInUser = {
 };
 const forgotPassword = {
     tags: ['Authentication'],
-    description:
-        'Request a password reset link for a user',
+    description: 'Request a password reset link for a user',
     requestBody: {
         content: {
             'application/json': {
@@ -291,7 +290,7 @@ const forgotPassword = {
                             type: 'string',
                             description: 'Valid email of an existing user',
                             example: 'johndoe@gmail.com',
-                        }
+                        },
                     },
                 },
             },
@@ -335,8 +334,7 @@ const forgotPassword = {
 };
 const resetPassword = {
     tags: ['Authentication'],
-    description:
-        'Reset existing user password',
+    description: 'Reset existing user password',
     requestBody: {
         content: {
             'application/json': {
@@ -403,7 +401,7 @@ const resetPassword = {
                     },
                 },
             },
-        }        
+        },
     },
 };
 

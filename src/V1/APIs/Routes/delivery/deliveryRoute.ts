@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import deliveryController from "../../Controllers/Delivery/deliveryController";
+import deliveryController from '../../Controllers/Delivery/deliveryController';
 import { validate } from '../../Middlewares/validateRequest.middleware';
 import { createOrderValidationRules } from '../../Utilities/Validations/order.validation';
 
@@ -9,7 +9,13 @@ const order = Router();
 
 const deliveries = new deliveryController();
 
-order.post('/', verifyToken, createOrderValidationRules(), validate, deliveries.createDelivery);
+order.post(
+    '/',
+    verifyToken,
+    createOrderValidationRules(),
+    validate,
+    deliveries.createDelivery
+);
 
 order.get('/all', verifyToken, deliveries.getAllDelivery);
 

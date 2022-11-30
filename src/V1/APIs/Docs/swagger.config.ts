@@ -29,7 +29,7 @@ const swaggerDocumentation = {
     ],
     paths: {
         ...authRouteDoc,
-        ...orderRouteDoc
+        ...orderRouteDoc,
     },
 };
 export default swaggerDocumentation;

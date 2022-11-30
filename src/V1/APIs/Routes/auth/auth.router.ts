@@ -3,13 +3,17 @@ import {
     create,
     logout,
     login,
-    activateAccount,forgotPassword,resetPassword
+    activateAccount,
+    forgotPassword,
+    resetPassword,
 } from '../../Controllers/Auth/auth.controller';
 import { validate } from '../../Middlewares/validateRequest.middleware';
 import {
     otpValidationRules,
     registerValidationRules,
-    loginValidationRules,emailValidationRules,restPasswordValidationRules
+    loginValidationRules,
+    emailValidationRules,
+    restPasswordValidationRules,
 } from '../../Utilities/Validations/auth.validation';
 
 const auth = Router();
@@ -32,9 +36,6 @@ auth.post(
     validate,
     resetPassword
 );
-auth.delete(
-    '/logout',
-    logout
-);
+auth.delete('/logout', logout);
 
 export default auth;

@@ -1,4 +1,4 @@
-import  { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import AuthService from '../../Services/Auth/auth.service';
 const authStore = new AuthService();
 
@@ -44,5 +44,3 @@ export const logout = async (
 ) => {
     return await authStore.logout(req, res, next);
 };
-
-

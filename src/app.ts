@@ -9,9 +9,7 @@ import { AppError } from './V1/APIs/Utilities/Errors/appError';
 import errorHandler from './V1/APIs/Utilities/Errors/errorHandler';
 import setupDb from './V1/APIs/Config/db/dbSetup';
 
- dotenv.config({ path: './src/V1/APIs/Config/.env' });
-// dotenv.config({ path: '../../../../../.env' });
-
+dotenv.config({ path: './src/V1/APIs/Config/.env' });
 // Initialize express
 const app: Application = express();
 
@@ -41,8 +39,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 app.use(errorHandler);
 
 // Listen for server connections
-const server = app.listen(PORT, () =>
-    console.log(`server running on ${PORT}`)
-);
+const server = app.listen(PORT, () => console.log(`server running on ${PORT}`));
 
 export default server;

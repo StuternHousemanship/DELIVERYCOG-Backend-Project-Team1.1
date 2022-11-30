@@ -5,36 +5,38 @@ import type { Knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 import path from 'path';
 
-dotenv.config({ path: './../../../../.env' });
+ // dotenv.config({ path: './../../../../.env' });
+ dotenv.config({ path: '.env' });
 
+const { POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD} = process.env;
 const config: { [key: string]: Knex.Config } = {
     development: {
         client: 'postgresql',
         connection: {
-            database: `${process.env.POSTGRES_DB}`,
-            user: `${process.env.POSTGRES_USER}`,
-            password: `${process.env.POSTGRES_PASSWORD}`     
+            database: `${POSTGRES_DB}`,
+            user: `${POSTGRES_USER}`,
+            password: `${POSTGRES_PASSWORD}`,
         },
-        
+
         pool: {
             min: 2,
             max: 10,
         },
         migrations: {
             tableName: 'knex_migrations',
-            directory: path.join(__dirname, './migrations')
+            directory: path.join(__dirname, './migrations'),
         },
         seeds: {
-            directory: __dirname +  '/db/seeds'
-          },
+            directory: __dirname + '/db/seeds',
+        },
         ...knexSnakeCaseMappers,
     },
     production: {
         client: 'postgresql',
         connection: {
-            database: `${process.env.POSTGRES_DB}`,
-            user: `${process.env.POSTGRES_USER}`,
-            password: `${process.env.POSTGRES_PASSWORD}`,
+            database: `${POSTGRES_DB}`,
+            user: `${POSTGRES_USER}`,
+            password: `${POSTGRES_PASSWORD}`,
         },
         pool: {
             min: 2,
@@ -42,10 +44,11 @@ const config: { [key: string]: Knex.Config } = {
         },
         migrations: {
             tableName: 'knex_migrations',
+            directory: path.join(__dirname, './migrations'),
         },
         seeds: {
-            directory: __dirname + '/db/seeds'
-          },
+            directory: __dirname + '/db/seeds',
+        },
         ...knexSnakeCaseMappers,
     },
 };

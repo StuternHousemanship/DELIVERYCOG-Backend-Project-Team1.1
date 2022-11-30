@@ -7,7 +7,7 @@ export interface DeliveryType {
     reciever_number: number;
     sender_name: string;
     sender_number: string | number;
-    destination: string,
+    destination: string;
     created_at?: string;
 }
 

@@ -15,7 +15,6 @@ export interface UserType {
     long_lat?: number;
 }
 
-
 export class User extends Model {
     static get tableName() {
         return 'users';

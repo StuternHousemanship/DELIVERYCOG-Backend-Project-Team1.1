@@ -9,7 +9,6 @@ export interface jwtToken {
     exp: number;
 }
 
-
 export const verifyToken = async (
     req: Request,
     res: Response,
@@ -54,7 +53,7 @@ export const verifyToken = async (
         }
         req.user = currentUser as UserType;
         next();
-    } catch (error) { 
+    } catch (error) {
         return next(
             new AppError(`something went wrong here is the error ${error}`, 500)
         );
