@@ -1,5 +1,5 @@
 import { Encryption } from '../../Utilities/bcrypt';
-import { User, UserType } from '../../Models/user.model.ts';
+import { User, UserType } from '../../Models/user.model';
 import crypto from 'crypto';
  
 const RandomeCode = crypto.randomInt(100000, 1000000);
@@ -15,6 +15,8 @@ export default class AuthRepository {
             phone_number: user.phone_number,
             email: user.email,
             verification_code: user.verification_code,
+            user_type: user.user_type,
+            
         });
         return newUser;
     }

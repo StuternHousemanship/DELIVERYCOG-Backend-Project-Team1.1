@@ -10,6 +10,8 @@
         "format": "npm run prettier ",
         "migrate:dev:up": "npx knex migrate:latest --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
         "migrate:dev:down": "npx knex migrate:down  --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
+        "migrate:dev:add": "npx knex migrate:make --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
+        "migrate:dev:rollback": "npx knex migrate:rollback --knexfile ./src/V1/APIs/Config/knexfile.ts --env development ",
         "migrate:prod:up": "npx knex migrate:latest --knexfile ./src/V1/APIs/Config/knexfile.ts --env production ",
         "migrate:prod:down": "npx knex migrate:down  --knexfile ./src/V1/APIs/Config/knexfile.ts --env production ",
         "dev": "npm run build && nodemon ./src/app.ts",
