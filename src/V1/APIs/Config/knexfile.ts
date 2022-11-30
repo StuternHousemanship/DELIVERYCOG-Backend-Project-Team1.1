@@ -5,7 +5,6 @@ import type { Knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 import path from 'path';
 
- // dotenv.config({ path: './../../../../.env' });
  dotenv.config({ path: '.env' });
 
 const { POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD} = process.env;
