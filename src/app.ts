@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 // import express
 import express, { Application, Request, Response, NextFunction } from 'express';
-
+import cors from 'cors';
 import routerV1 from './V1/APIs/Routes';
 import { AppError } from './V1/APIs/Utilities/Errors/appError';
 import errorHandler from './V1/APIs/Utilities/Errors/errorHandler';
@@ -19,11 +19,9 @@ setupDb();
 
 // Port
 const PORT: number = Number(process.env.PORT) || 3000;
-const address = `0.0.0.0:${PORT}`;
 
 // Body parser middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json()).use(express.urlencoded({ extended: false })).use(cors());
 
 // Define index route
 app.get('/', async (req: Request, res: Response) => {
