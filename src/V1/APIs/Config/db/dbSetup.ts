@@ -5,10 +5,12 @@ import { Model } from 'objection';
 const {NODE_ENV } = process.env;
 
 const Dev = () => {
+    console.log('development DB connected');
     const db = knex(knexfile.development);
     Model.knex(db);
 };
 const Prod =()=>{
+    console.log('production DB connected');
     const db = knex(knexfile.production);
     Model.knex(db);
 }
