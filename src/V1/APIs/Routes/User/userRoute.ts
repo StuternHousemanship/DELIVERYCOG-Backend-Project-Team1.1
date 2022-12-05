@@ -1,16 +1,10 @@
-
 import { Request, Response, NextFunction, Router } from 'express';
-import  userController from '../../Controllers/User/userController';
-
-
+import userController from '../../Controllers/User/userController';
 
 const router = Router();
 
 const userTypes = new userController();
 
+router.get('/:userType', userTypes.getRiders);
 
-router.get('/:userType', userTypes.getRiders)
-
-
-
-export default router
+export default router;

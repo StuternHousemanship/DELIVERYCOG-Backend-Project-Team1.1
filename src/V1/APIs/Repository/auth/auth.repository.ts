@@ -16,7 +16,6 @@ export default class AuthRepository {
             email: user.email,
             verification_code: user.verification_code,
             user_type: user.user_type,
-            
         });
         return newUser;
     }

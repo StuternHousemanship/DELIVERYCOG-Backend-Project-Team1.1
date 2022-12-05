@@ -72,15 +72,13 @@ export default class DeliveryService {
 
             //Return status 404 if not found
             if (!deliveries || !deliveries.length)
-                return res
-                    .status(404)
-                    .json(
-                        response({
-                            message: `Delivery not found for user ${String(
-                                req.user.first_name
-                            )}`,
-                        })
-                    );
+                return res.status(404).json(
+                    response({
+                        message: `Delivery not found for user ${String(
+                            req.user.first_name
+                        )}`,
+                    })
+                );
 
             //Return status 200 for all Users orders
             return res
@@ -108,15 +106,13 @@ export default class DeliveryService {
 
             //Return status 404 if not found
             if (!delivery || !delivery.length)
-                return res
-                    .status(404)
-                    .json(
-                        response({
-                            message: `delivery not found for user ${String(
-                                req.user.first_name
-                            )}`,
-                        })
-                    );
+                return res.status(404).json(
+                    response({
+                        message: `delivery not found for user ${String(
+                            req.user.first_name
+                        )}`,
+                    })
+                );
 
             //Return status 200 if found
             return res

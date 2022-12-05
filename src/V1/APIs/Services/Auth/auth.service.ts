@@ -19,7 +19,14 @@ dotenv.config({ path: './src/V1/APIs/Config/.env' });
 export default class AuthService {
     public async registerUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const { firstName, lastName, password, userType, phoneNumber, email } = req.body;
+            const {
+                firstName,
+                lastName,
+                password,
+                userType,
+                phoneNumber,
+                email,
+            } = req.body;
 
             const code = crypto.randomInt(100000, 1000000);
             const user = {
@@ -29,7 +36,7 @@ export default class AuthService {
                 phone_number: phoneNumber,
                 email,
                 verification_code: code,
-                user_type:userType
+                user_type: userType,
             };
 
             const userEmail = await validation.where('email', user.email);
